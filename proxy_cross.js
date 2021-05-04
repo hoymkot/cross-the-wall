@@ -2,22 +2,18 @@ const http = require('http');
 const net = require('net');
 
 // Create an HTTP tunneling proxy
-const proxy = http.createServer((req, res) => {
-    // console.log("write head 7")
-    // res.writeHead(200, { 'Content-Type': 'text/plain' });
-    // res.end('okay');
-});
+const proxy = http.createServer((req, res) => {});
 
 function readRequest(clientSocket, scfSocket , sendReqToScf) {
     header = ""
     body = ""
     content_length = 0
     isSplitted = false
-    // raw = Buffer.from('')
-    raw = ''
+    raw = Buffer.from('')
+    // raw = ''
     clientSocket.on('data', function(data) {
-        raw = raw + data.toString() 
-        // raw = Buffer.concat([raw , data])
+        // raw = raw + data.toString() 
+        raw = Buffer.concat([raw , data])
 
         if (isSplitted == false) {
             header = header + data.toString()
@@ -66,7 +62,8 @@ proxy.on('connect', (req, clientSocket, head) => {
         console.log("proxy accepted request")
 
         readRequest(clientSocket, scfSocket, function(raw, scfSocket) {
-            hex = raw
+            // hex = raw
+            hex = raw.toString('hex')
             console.log("sent request to SCF")
             scf_mock_header = 'POST ' + scf_path + ' HTTP/1.1\r\n' +
                 'Host: ' + scf_host + '\r\n' +
@@ -77,6 +74,8 @@ proxy.on('connect', (req, clientSocket, head) => {
             scfSocket.write("\r\n")
             // TODO: need to encrypt the following raw string to avoid being caught by the firewall 
             scfSocket.write(hex)
+            console.log('input length')
+            console.log(hex.length)
 
         })
 
@@ -96,16 +95,21 @@ proxy.on('connect', (req, clientSocket, head) => {
                     isSplitted = true
                     temp = scf_resp_header.substring(scf_resp_header.indexOf('Content-Length: ') + 16)
                     scf_content_length = parseInt(temp.substring(0, temp.indexOf("\r\n")))
+                    console.log("scf resp header")
                     console.log(scf_resp_header)
-                    console.log(scf_resp_body)
-                    console.log(scf_content_length)
+                    // console.log(scf_resp_body)
                 }
             } else {
                 scf_resp_body = scf_resp_body + data.toString()
             }
 
             if (scf_content_length == scf_resp_body.length) {
+                console.log("scf resp body")
                 console.log(scf_resp_body)
+                console.log('scf header content length')
+                console.log(scf_content_length)
+                console.log('scf resp body actual length')
+                console.log(scf_resp_body.length)
                 // full message gotten , do something use full
             }
         });
