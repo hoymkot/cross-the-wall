@@ -1,8 +1,10 @@
 const http = require('http');
 const net = require('net');
+const { URL } = require('url');
 
 // Create an HTTP tunneling proxy
-const proxy = http.createServer((req, res) => {});
+const proxy = http.createServer((req, res) => {
+});
 
 function readRequest(clientSocket, scfSocket , sendReqToScf) {
     header = ""
@@ -46,10 +48,7 @@ proxy.on('connect', (req, clientSocket, head) => {
     console.log(req.url)
 
     // Connect to an origin server
-    const {
-        port,
-        hostname
-    } = new URL(`http://${req.url}`);
+    const { port, hostname } = new URL(`http://${req.url}`);
 
     const scf_host = 'service-jjmvpnn2-1304726915.hk.apigw.tencentcs.com'
     const scf_port = 80
@@ -63,19 +62,25 @@ proxy.on('connect', (req, clientSocket, head) => {
 
         readRequest(clientSocket, scfSocket, function(raw, scfSocket) {
             // hex = raw
-            hex = raw.toString('hex')
+            obj = btoa(JSON.stringify({
+              'port' : port,
+              'hostname' : hostname,
+              'hex' : raw.toString('hex'),
+            }))
+
+
             console.log("sent request to SCF")
             scf_mock_header = 'POST ' + scf_path + ' HTTP/1.1\r\n' +
                 'Host: ' + scf_host + '\r\n' +
                 // TODO: may enable compression in the future 
-                'Content-Length: ' + hex.length + '\r\n'
+                'Content-Length: ' + obj.length + '\r\n'
             // 'Accept-Encoding: gzip, deflate, br\r\n' 
             scfSocket.write(scf_mock_header)
             scfSocket.write("\r\n")
             // TODO: need to encrypt the following raw string to avoid being caught by the firewall 
-            scfSocket.write(hex)
+            scfSocket.write(obj)
             console.log('input length')
-            console.log(hex.length)
+            console.log(obj.length)
 
         })
 
