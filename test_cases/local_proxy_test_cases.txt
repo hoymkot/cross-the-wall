@@ -1,0 +1,5 @@
+1. start local proxy, and send some requests, should fail without crash
+2. start coordinator, send some requests, should work
+3. stop coordinator, send some requests, should fail without crash
+4. start coodrinator, send some request, should work
+( reasonable wait time for recovery when peer stop and start is okay)

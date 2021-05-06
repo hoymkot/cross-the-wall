@@ -8,10 +8,11 @@ this software requires the following nodes library
 Milestone Features:
 * able to watch youtube via this proxy
 * able to check gmail 
+* log request 
 
 TODO:
-
-* loose coupling , each server can stand-alone and pluggable
+* log session id for local_proxy
+* loose coupling , make local_proxy pluggage 
 * live test while in firewall
 * enhance performance (in terms of speed , responsiveness)
 * increase the number of simultaneous connection

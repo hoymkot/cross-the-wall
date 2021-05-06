@@ -104,18 +104,16 @@ proxy.on('connect', (req, clientSocket, head) => {
     }
 
   })
-
-  scf_request.on("error", (err) => {
-    console.log("error", new Date().toISOString(), 'scf_request', err)
-  })
-
   // send callback info and target info to the remote coordinator 
   scf_request.write(Buffer.from(JSON.stringify(connection_info)))
   scf_request.end()
+  scf_request.on("error", (err) => {
+    console.log("error", new Date().toISOString(), 'scf_request', err)
+  })
 
 });
 
 // Now that proxy is running
 proxy.listen(PROXY_LOCAL_PORT, PROXY_HOSTNAME, () => {
-    console.log("poxy started")
+    console.log("info", new Date().toISOString(), "localhost poxy started")
 });
