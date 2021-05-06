@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 const http = require('http');
 const net = require('net');
@@ -19,29 +19,29 @@ const proxy = http.createServer((req, res) => {
         });
 
         req.on("end", function() {
-            target_connection_info = JSON.parse(body.toString())
+            var target_connection_info = JSON.parse(body.toString())
 
             var connect_socket = async () => {
 
-                proxyPromise = new Promise((resolve, reject) => {
-                    proxySocket = net.connect(target_connection_info.proxy_port || 80, target_connection_info.proxy_hostname, () => {
+                var proxyPromise = new Promise((resolve, reject) => {
+                    var proxySocket = net.connect(target_connection_info['proxy_port'] || 80, target_connection_info['proxy_hostname'] , () => {
                         resolve(proxySocket)
                         // TODO:error handling
                     })
                 })
 
 
-                targetPromise = new Promise((resolve, reject) => {
-                    targetSocket = net.connect(target_connection_info.target_port || 80, target_connection_info.target_host_name, () => {
+                var targetPromise = new Promise((resolve, reject) => {
+                    var targetSocket = net.connect(target_connection_info['target_port']  || 80, target_connection_info['target_host_name'] , () => {
                         resolve(targetSocket)
                         // TODO:error handling
                     })
                 })
 
-                sockets = await Promise.all([targetPromise, proxyPromise])
-                socket[1].write(target_connection_info.uuid)
+                var sockets = await Promise.all([targetPromise, proxyPromise])
+                sockets[1].write(target_connection_info.uuid)
                 sockets[0].pipe(sockets[1])
-                socket[1].pipe(socket[0])
+                sockets[1].pipe(sockets[0])
                 // todo what if one fail to connect
 
             }
