@@ -24,8 +24,6 @@ Client Web Browser <=> Local Proxy <=> Firewall <=> Remote Coordinator <=> Targe
 ** bridge the communication between Local Proxy and target web server. 
 
 TODO:
-* log session id for local_proxy
-* [local_proxy] clean up sockets when Remote Coordinator failed
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
 * encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection
 * live test while in firewall

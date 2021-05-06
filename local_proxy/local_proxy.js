@@ -17,6 +17,10 @@ const COORDINATOR_PORT = config.COORDINATOR_PORT
 // uuid => client(browser) socket look up table
 var client_socket_table = { }
 
+setTimeout(()=>{
+  client_socket_table= Object.fromEntries(Object.entries(client_socket_table).filter(([uuid,clientSocket]) => clientSocket.destroyed == false));
+}, config.CLEAN_LOOKUP_TABLE)
+
 // Create an HTTP tunneling proxy server
 const proxy_server = http.createServer((req, res) => {});
 
@@ -66,12 +70,12 @@ const scf_target_listener = net.createServer({}, (scf_target_socket) => {
   })
 
   scf_target_socket.on('error', (err)=>{
-    console.log("warning", new Date().toISOString, "scf_target_socket", err.lineNumber, err)
+    console.log("warning", new Date().toISOString, "scf_target_socket", err.lineNumber, session_id, err)
   })
 });
 
 scf_target_listener.on('error', (err) => {
-  console.log("error", new Date().toISOString, "scf_target_listener", err.lineNumber, err)
+  console.log("error", new Date().toISOString, "scf_target_listener", err.lineNumber, session_id, err)
 });
 
 scf_target_listener.listen(SCF_TARGET_LISTENER_PORT, () => {});
@@ -80,9 +84,10 @@ scf_target_listener.listen(SCF_TARGET_LISTENER_PORT, () => {});
 proxy_server.on('connect', (req, clientSocket, head) => {
   // Connect to an origin server, http or https really doesn't matter in this design
   const { port, hostname } = new URL(`http://${req.url}`);
+  var session_id = uuid.v4()
 
     clientSocket.on('error', (err) => {
-      console.log("error", new Date().toISOString, "clientSocket", err.lineNumber, hostname, port, err)
+      console.log("error", new Date().toISOString, "clientSocket", err.lineNumber, session_id, err)
     });
     // accepted a connection from a browser
     // todo: may make one for HTTP/2 in the future 
@@ -90,16 +95,16 @@ proxy_server.on('connect', (req, clientSocket, head) => {
                     'Proxy-agent: Node.js-Proxy\r\n' +
                     '\r\n');
 
-  console.log("info", new Date().toISOString(), 'req.url', req.url)
+  console.log("info", new Date().toISOString(), 'req.url',session_id, req.url)
   var connection_info = {
     proxy_hostname: PROXY_PUBLIC_HOSTNAME,
     proxy_port: SCF_TARGET_LISTENER_PORT, // todo there is another reference at scf_target_listener
     target_host_name: hostname,
     target_port: port,
-    uuid: uuid.v4()
+    uuid: session_id
   }
   // make this socket available for latter reference 
-  client_socket_table[connection_info.uuid] = clientSocket
+  client_socket_table[session_id] = clientSocket
 
   const scf_host_options = {
     hostname: COORDINATOR_HOSTNAME,
@@ -109,13 +114,13 @@ proxy_server.on('connect', (req, clientSocket, head) => {
 
   const scf_request = http.request(scf_host_options, res => {
     if (res.statusCode != 200) {
-      console.log("error", new Date().toISOString(), 'scf_request', "statusCode: " + res.statusCode)
+      console.log("error", new Date().toISOString(), 'scf_request',session_id, "statusCode: " + res.statusCode)
       var data = Buffer.from('')
       res.on('data', d => {
         data = Buffer.concat([data, d])
       })
       res.on("end", ()=> {
-        console.log("error", new Date().toISOString(), 'scf_request', "body: " + data.toString())
+        console.log("error", new Date().toISOString(), 'scf_request', session_id,"body: " + data.toString())
       })
     }
 
@@ -124,7 +129,7 @@ proxy_server.on('connect', (req, clientSocket, head) => {
   scf_request.write(Buffer.from(JSON.stringify(connection_info)))
   scf_request.end()
   scf_request.on("error", (err) => {
-    console.log("error", new Date().toISOString(), 'scf_request', err)
+    console.log("error", new Date().toISOString(), 'scf_request', session_id,err)
   })
 
 });
