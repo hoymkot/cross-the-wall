@@ -1,3 +1,4 @@
+make local proxy pluggable, works independent for availability of coordinator 
 1. start local proxy, and send some requests, should fail without crash
 2. start coordinator, send some requests, should work
 3. stop coordinator, send some requests, should fail without crash

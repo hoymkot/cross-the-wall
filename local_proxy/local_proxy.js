@@ -17,8 +17,20 @@ const COORDINATOR_PORT = config.COORDINATOR_PORT
 // uuid => client(browser) socket look up table
 var client_socket_table = { }
 
-// Create an HTTP tunneling proxy
-const proxy = http.createServer((req, res) => {});
+// Create an HTTP tunneling proxy server
+const proxy_server = http.createServer((req, res) => {});
+
+// Now that proxy is running
+proxy_server.listen(PROXY_LOCAL_PORT, PROXY_HOSTNAME, () => {
+    console.log("info", new Date().toISOString(), "localhost poxy started")
+});
+
+
+proxy_server.on("error", (err)=>{
+  console.log("error", new Date().toISOString(), "proxy_server", err.lineNumber, err)
+})
+
+
 
 const scf_target_listener = net.createServer({}, (scf_target_socket) => {
   // 'connection' listener.
@@ -54,26 +66,30 @@ const scf_target_listener = net.createServer({}, (scf_target_socket) => {
   })
 
   scf_target_socket.on('error', (err)=>{
-    console.log("warning", new Date().toISOString, "scf_target_socket", err)
+    console.log("warning", new Date().toISOString, "scf_target_socket", err.lineNumber, err)
   })
 });
 
 scf_target_listener.on('error', (err) => {
-  console.log("error", new Date().toISOString, "scf_target_listener", err)
+  console.log("error", new Date().toISOString, "scf_target_listener", err.lineNumber, err)
 });
 
 scf_target_listener.listen(SCF_TARGET_LISTENER_PORT, () => {});
 
 // Create an HTTP tunneling proxy
-proxy.on('connect', (req, clientSocket, head) => {
+proxy_server.on('connect', (req, clientSocket, head) => {
+  // Connect to an origin server, http or https really doesn't matter in this design
+  const { port, hostname } = new URL(`http://${req.url}`);
+
+    clientSocket.on('error', (err) => {
+      console.log("error", new Date().toISOString, "clientSocket", err.lineNumber, hostname, port, err)
+    });
     // accepted a connection from a browser
     // todo: may make one for HTTP/2 in the future 
     clientSocket.write('HTTP/1.1 200 Connection Established\r\n' +
                     'Proxy-agent: Node.js-Proxy\r\n' +
                     '\r\n');
 
-  // Connect to an origin server, http or https really doesn't matter in this design
-  const { port, hostname } = new URL(`http://${req.url}`);
   console.log("info", new Date().toISOString(), 'req.url', req.url)
   var connection_info = {
     proxy_hostname: PROXY_PUBLIC_HOSTNAME,
@@ -113,7 +129,3 @@ proxy.on('connect', (req, clientSocket, head) => {
 
 });
 
-// Now that proxy is running
-proxy.listen(PROXY_LOCAL_PORT, PROXY_HOSTNAME, () => {
-    console.log("info", new Date().toISOString(), "localhost poxy started")
-});

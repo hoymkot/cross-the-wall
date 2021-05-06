@@ -31,7 +31,6 @@ const proxy = http.createServer((req, res) => {
             var proxyPromise = new Promise((resolve, reject) => {
                 var proxySocket = net.connect(target_connection_info['proxy_port'] || 80, target_connection_info['proxy_hostname'], () => {
                     resolve(proxySocket)
-                    // TODO:error handling
                 })
                 proxySocket.on("error", (err) => {
                     console.log("info",session_id, new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
