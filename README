@@ -7,10 +7,10 @@ this software requires the following nodes library
 
 Milestone Features:
 * able to watch youtube via this proxy
+* able to check gmail 
 
 TODO:
 
-* put config in a configuration files
 * loose coupling , each server can stand-alone and pluggable
 * live test while in firewall
 * enhance performance (in terms of speed , responsiveness)

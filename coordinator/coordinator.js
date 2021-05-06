@@ -4,15 +4,17 @@ const http = require('http');
 const net = require('net');
 const {URL} = require('url');
 const config = require('./config')
+const uuid = require('uuid')
+
 const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
 const COORDINATOR_PORT = config.COORDINATOR_PORT
 
 // create a server that accept callback info and target info from local proxy 
 const proxy = http.createServer((req, res) => {
+    const session_id = uuid.v4() // identifier for this session
     if (req.method === "GET") {
-        console.log("info", new Date().toISOString(), req.connection.remoteAddress,"invalid request ")
+        console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"invalid request ")
         res.writeHead(400, {});
-
         res.end()
     } else if (req.method === "POST") {
         // body should hold callback info and target info from local proxy
@@ -23,7 +25,7 @@ const proxy = http.createServer((req, res) => {
 
         req.on("end", function() {
             var target_connection_info = JSON.parse(body.toString())
-            console.log("info", new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
+            console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
 
 
             var proxyPromise = new Promise((resolve, reject) => {
@@ -32,7 +34,7 @@ const proxy = http.createServer((req, res) => {
                     // TODO:error handling
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("info", new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
+                    console.log("info",session_id, new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
                     reject(err)
                 })
             })
@@ -44,7 +46,7 @@ const proxy = http.createServer((req, res) => {
                     // TODO:error handling
                 })
                 targetSocket.on("error", (err) => {
-                    console.log("info", new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
+                    console.log("info", session_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
                     reject(err)
                 })
             })
@@ -55,7 +57,7 @@ const proxy = http.createServer((req, res) => {
                     sockets[0].pipe(sockets[1])
                     sockets[1].pipe(sockets[0])
                 }).catch((err) => {
-                    console.log("warning", new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge")
+                    console.log("warning", session_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge")
                 })
 
         });
