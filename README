@@ -1,0 +1,21 @@
+this software requires the following nodes library 
+* const http = require('http')
+* const net = require('net');
+* const { URL } = require('url');
+* const uuid = require('uuid')
+
+
+Milestone Features:
+* able to watch youtube via this proxy
+
+TODO:
+
+* put config in a configuration files
+* loose coupling , each server can stand-alone and pluggable
+* live test while in firewall
+* enhance performance (in terms of speed , responsiveness)
+* increase the number of simultaneous connection
+* support http2 
+* localhost proxy coordination 
+* encrypted of data transfer (secure sockets)
+* incorporate express for loggging and other advance features 

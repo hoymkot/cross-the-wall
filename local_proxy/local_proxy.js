@@ -3,14 +3,15 @@ const http = require('http')
 const net = require('net');
 const { URL } = require('url');
 const uuid = require('uuid')
+const config = require('./config')
 
 // todo here is the configuration, may externalize it to a config files
-const PROXY_HOSTNAME = 'localhost' // hostname for local browser to point to
-const PROXY_LOCAL_PORT = '1337' // port for local browser to point to
-const PROXY_PUBLIC_HOSTNAME = 'localhost' // public facing hostname or IP for accepting connections from coordinator
-const SCF_TARGET_LISTENER_PORT = 8124 // public facing port for accepting connections from coordinator
-const COORDINATOR_HOSTNAME = 'localhost'
-const COORDINATOR_PORT = 80
+const PROXY_HOSTNAME = config.PROXY_HOSTNAME // hostname for local browser to point to
+const PROXY_LOCAL_PORT = config.PROXY_LOCAL_PORT // port for local browser to point to
+const PROXY_PUBLIC_HOSTNAME = config.PROXY_PUBLIC_HOSTNAME // public facing hostname or IP for accepting connections from coordinator
+const SCF_TARGET_LISTENER_PORT = config.SCF_TARGET_LISTENER_PORT // public facing port for accepting connections from coordinator
+const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
+const COORDINATOR_PORT = config.COORDINATOR_PORT
 
 // each client could be a browser
 // uuid => client(browser) socket look up table
