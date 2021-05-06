@@ -4,7 +4,7 @@ const net = require('net');
 const { URL } = require('url');
 const uuid = require('uuid')
 
-// todo: here is the configuration, may externalize it to a config files
+// todo here is the configuration, may externalize it to a config files
 const PROXY_HOSTNAME = 'localhost' // hostname for local browser to point to
 const PROXY_LOCAL_PORT = '1337' // port for local browser to point to
 const PROXY_PUBLIC_HOSTNAME = 'localhost' // public facing hostname or IP for accepting connections from coordinator
@@ -73,7 +73,7 @@ proxy.on('connect', (req, clientSocket, head) => {
 
   // Connect to an origin server, http or https really doesn't matter in this design
   const { port, hostname } = new URL(`http://${req.url}`);
-
+  console.log("info", new Date().toISOString(), 'req.url', req.url)
   var connection_info = {
     proxy_hostname: PROXY_PUBLIC_HOSTNAME,
     proxy_port: SCF_TARGET_LISTENER_PORT, // todo there is another reference at scf_target_listener
@@ -91,7 +91,6 @@ proxy.on('connect', (req, clientSocket, head) => {
   }
 
   const scf_request = http.request(scf_host_options, res => {
-    console.log("info", new Date().toISOString(), 'scf_request', JSON.stringify(scf_host_options))
     if (res.statusCode != 200) {
       console.log("error", new Date().toISOString(), 'scf_request', "statusCode: " + res.statusCode)
       var data = Buffer.from('')
