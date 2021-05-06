@@ -4,7 +4,7 @@ const net = require('net');
 const { URL } = require('url');
 const uuid = require('uuid')
 
-// here is the configuration, may externalize it to a config files
+// todo: here is the configuration, may externalize it to a config files
 const PROXY_HOSTNAME = 'localhost' // hostname for local browser to point to
 const PROXY_LOCAL_PORT = '1337' // port for local browser to point to
 const PROXY_PUBLIC_HOSTNAME = 'localhost' // public facing hostname or IP for accepting connections from coordinator
