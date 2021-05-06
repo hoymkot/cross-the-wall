@@ -2,9 +2,10 @@
 
 const http = require('http');
 const net = require('net');
-const {
-    URL
-} = require('url');
+const {URL} = require('url');
+
+const COORDINATOR_HOSTNAME = 'localhost'
+const COORDINATOR_PORT = 80
 
 // create a server that accept callback info and target info from local proxy 
 const proxy = http.createServer((req, res) => {
@@ -61,6 +62,6 @@ const proxy = http.createServer((req, res) => {
 
 
 // Now that proxy is running
-proxy.listen(80, '127.0.0.1', () => {
+proxy.listen(COORDINATOR_PORT, COORDINATOR_HOSTNAME, () => {
     console.log("coordinator started ")
 });
