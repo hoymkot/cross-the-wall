@@ -75,10 +75,22 @@ const scf_target_listener = net.createServer({}, (scf_target_socket) => {
 });
 
 scf_target_listener.on('error', (err) => {
-  console.log("error", new Date().toISOString, "scf_target_listener", err.lineNumber, session_id, err)
+  console.log("error", new Date().toISOString, "scf_target_listener", err.lineNumber, err)
 });
 
 scf_target_listener.listen(SCF_TARGET_LISTENER_PORT, () => {});
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Create an HTTP tunneling proxy
 proxy_server.on('connect', (req, clientSocket, head) => {
