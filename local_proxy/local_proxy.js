@@ -70,7 +70,7 @@ const scf_target_listener = net.createServer({}, (scf_target_socket) => {
   })
 
   scf_target_socket.on('error', (err)=>{
-    console.log("warning", new Date().toISOString, "scf_target_socket", err.lineNumber, session_id, err)
+    console.log("warning", new Date().toISOString, "scf_target_socket", err.lineNumber, err)
   })
 });
 
