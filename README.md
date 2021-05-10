@@ -1,10 +1,10 @@
-# Milestone Features:
+##` Milestone Features:
 * able to watch youtube via this proxy
 * able to check gmail 
 * log request 
 * each service component is pluggable.
 
-# Structure 
+## Structure 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
 
 ### Local Proxy 
@@ -23,14 +23,14 @@
 
 
 
-# Requirements
+## Requirements
 * nodejs
 * http = require('http')
 * net = require('net');
 * { URL } = require('url');
 * uuid = require('uuid')
 
-# TODO
+## Todo
 * Instructment -- or maybe autorestart when memory footprint is too large ? 
 * NAT Mapping Service, ping a Lambda Function to keep alive. The function would reply with a pair sourice_ip and port. and notify neigher serivce the most up-to-date source_ip and port  
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
