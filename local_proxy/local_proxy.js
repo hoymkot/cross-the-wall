@@ -44,7 +44,7 @@ const scf_target_listener = net.createServer({}, (scf_target_socket) => {
   var clientSocket = false
 
   scf_target_socket.on('data', (data)=>{
-    if (true_uuid == false) {
+    if (true_uuid == false) { // this check is actually very important
       uuid = Buffer.concat([uuid, data])
       // on connect, uuid v4 is the only fixed length identifier the coordinator will send
       if (uuid.length >= uuid_bytes_length ) {
