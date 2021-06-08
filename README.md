@@ -1,36 +1,36 @@
-# Milestone Features:
+## Milestone Features:
 * able to watch youtube via this proxy
 * able to check gmail 
 * log request 
 * each service component is pluggable.
 
-# Structure 
+## Structure 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
 
 ### Local Proxy 
-** live behind the firewall
-** act as a ordinary http proxy for a client web browser. 
-** send target web site info to the Remote Coordinator
-** wait for a seperation connection from the Remote Coordinator. now the Remote Coordinator acts as a reverse proxy for the target web server  
-** bridge the communication between the client browser and Remote Coordinator
+* live behind the firewall
+* act as a ordinary http proxy for a client web browser. 
+* send target web site info to the Remote Coordinator
+* wait for a seperation connection from the Remote Coordinator. now the Remote Coordinator acts as a reverse proxy for the target web server  
+* bridge the communication between the client browser and Remote Coordinator
 
 ### Remote Coordinator
-** live outside of the firewall
-** accept target web site info from Local Proxy 
-** connect to the target web server
-** connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
-** bridge the communication between Local Proxy and target web server. 
+* live outside of the firewall
+* accept target web site info from Local Proxy 
+* connect to the target web server
+* connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
+* bridge the communication between Local Proxy and target web server. 
 
 
 
-# Requirements
+## Requirements
 * nodejs
 * http = require('http')
 * net = require('net');
 * { URL } = require('url');
 * uuid = require('uuid')
 
-# TODO
+## Todo
 * Instructment -- or maybe autorestart when memory footprint is too large ? 
 * NAT Mapping Service, ping a Lambda Function to keep alive. The function would reply with a pair sourice_ip and port. and notify neigher serivce the most up-to-date source_ip and port  
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
