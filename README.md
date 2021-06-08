@@ -8,18 +8,18 @@
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
 
 ### Local Proxy 
-** live behind the firewall
-** act as a ordinary http proxy for a client web browser. 
-** send target web site info to the Remote Coordinator
-** wait for a seperation connection from the Remote Coordinator. now the Remote Coordinator acts as a reverse proxy for the target web server  
-** bridge the communication between the client browser and Remote Coordinator
+* live behind the firewall
+* act as a ordinary http proxy for a client web browser. 
+* send target web site info to the Remote Coordinator
+* wait for a seperation connection from the Remote Coordinator. now the Remote Coordinator acts as a reverse proxy for the target web server  
+* bridge the communication between the client browser and Remote Coordinator
 
 ### Remote Coordinator
-** live outside of the firewall
-** accept target web site info from Local Proxy 
-** connect to the target web server
-** connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
-** bridge the communication between Local Proxy and target web server. 
+* live outside of the firewall
+* accept target web site info from Local Proxy 
+* connect to the target web server
+* connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
+* bridge the communication between Local Proxy and target web server. 
 
 
 
