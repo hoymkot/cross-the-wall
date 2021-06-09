@@ -23,12 +23,10 @@
 
 
 
-## Requirements
+## Dependencies
 * nodejs
-* http = require('http')
-* net = require('net');
-* { URL } = require('url');
-* uuid = require('uuid')
+* npm install uuid@8.3.2
+* npm install axios@0.21.1
 
 ## Todo
 * Instructment -- or maybe autorestart when memory footprint is too large ? 
