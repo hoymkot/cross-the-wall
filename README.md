@@ -29,7 +29,7 @@
 * npm install axios@0.21.1
 
 ## Todo
-* Instructment -- or maybe autorestart when memory footprint is too large ? 
+* Instrument -- or maybe autorestart when memory footprint is too big ? 
 * NAT Mapping Service, ping a Lambda Function to keep alive. The function would reply with a pair sourice_ip and port. and notify neigher serivce the most up-to-date source_ip and port  
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
 * encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection
