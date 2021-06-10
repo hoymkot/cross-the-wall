@@ -38,4 +38,14 @@
 * increase the number of simultaneous connection
 * performance testing
 * support http2 
+* modulize all packages
+* return ip port service send package to keep nat table live , every 30 seconds or 10 seconds 
+* return ip port service timeout when no response is got 
+* local_proxy renew public ip port on time out  every 50 seconds  
+* fix TODO 
+
+
+## features done 
+* able to watch youtube video 
+* able remember session
 

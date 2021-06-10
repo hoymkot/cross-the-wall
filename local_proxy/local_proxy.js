@@ -5,7 +5,6 @@ const net = require('net');
 const { URL } = require('url');
 const uuid = require('uuid')
 const config = require('./config')
-
 // todo here is the configuration, may externalize it to a config files
 const PROXY_HOSTNAME = config.PROXY_HOSTNAME // hostname for local browser to point to
 const PROXY_LOCAL_PORT = config.PROXY_LOCAL_PORT // port for local browser to point to
@@ -13,11 +12,12 @@ const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
 const COORDINATOR_PORT = config.COORDINATOR_PORT
 const EXTERNAL_IP_PORT_SERVICE = config.EXTERNAL_IP_PORT_SERVICE
 // const EXTERNAL_IP_PORT_REFRESH_INTERVAL = config.EXTERNAL_IP_PORT_REFRESH_INTERVAL
-
-
+console.log("info", new Date().toISOString(), __filename + " starting")
 // Global variables 
 var PUBLIC_IP_PORT = {}
-
+// each client could be a browser
+// uuid => client(browser) socket look up table
+var client_socket_table = { }
 
 // TODO: make it an object
 // address and port for serverless cloud function to hit back for data tunneling. 
@@ -109,9 +109,6 @@ getExternalIpPort(startTunnelCreationService)
 
 
 
-// each client could be a browser
-// uuid => client(browser) socket look up table
-var client_socket_table = { }
 
 setTimeout(()=>{
   client_socket_table= Object.fromEntries(Object.entries(client_socket_table).filter(([uuid,clientSocket]) => clientSocket.destroyed == false));
