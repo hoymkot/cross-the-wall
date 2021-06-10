@@ -2,26 +2,38 @@
 * able to watch youtube via this proxy
 * able to check gmail 
 * log request 
-* each service component is pluggable.
+* each service component can run independently (loose coupling).
+* able to work behind a NAT infrastructure
 
-## Structure 
+
+## Technial Specification 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
 
 ### Local Proxy 
-* live behind the firewall
-* act as a ordinary http proxy for a client web browser. 
-* send target web site info to the Remote Coordinator
-* wait for a seperation connection from the Remote Coordinator. now the Remote Coordinator acts as a reverse proxy for the target web server  
-* bridge the communication between the client browser and Remote Coordinator
+* live behind a firewall, run on a personal computer
+* act as a ordinary http proxy for a ordinary client web browser like Firefox. 
+* startup workflow 
+** ask IP:Port Reporting Service for public facing IP and port and open a NAT tunnel, and record the local port used in this request. (Google NAT Transveral for more information)
+** create a serivce (Tunnel Creation Service) that listened on the previously recorded local port. This service build communication tunnels between the web browser and the target web site.
+** when the Tunnel Creation Service is created, start a timer (configurable). Whenever this service receives a packet, renew this timer. On timeout, close the service and restart this workflow. 
+* Normal Workflow (when the client browser sends a request)
+** on every request (connection) from the web browser, create a session id, and record it and the socket of this connection on a lookup table. 
+** send target web site info, the public facing IP:Port, and the session id to the Remote Coordinator 
+** have Tunnel Creation Service to wait for a seperation connection from the Remote Coordinator. Now the Remote Coordinator acts as a reverse proxy for the target web server. When connected, the Remote Coordinator first sends a session id to identify the corresponding browser socket, and the rest is data from the target web server. After getting session id, the Tunnel Creation Service connect the socket of this connection to that of the corresponing web browser connection. Pipe them together, and now we have a tunnel to handle to a single browers-website request. 
+
 
 ### Remote Coordinator
 * live outside of the firewall
 * accept target web site info from Local Proxy 
 * connect to the target web server
 * connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
-* bridge the communication between Local Proxy and target web server. 
+* bridge the communication between Local Proxy and target web server. (Build a tunneling) 
 
+### IP:Port Reporting Service
+* Local Proxy accesses this service to get its current public facing IP and port and open a NAT trasveral tunnel 
+* This IP:Port frequently send packets to Local Proxy to keep NAT table record alive. If it hears no reply from Local Proxy, stop sending packets. 
 
+ 
 
 ## Dependencies
 * nodejs
@@ -43,9 +55,4 @@
 * return ip port service timeout when no response is got 
 * local_proxy renew public ip port on time out  every 50 seconds  
 * fix TODO 
-
-
-## features done 
-* able to watch youtube video 
-* able remember session
 
