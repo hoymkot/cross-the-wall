@@ -1,4 +1,4 @@
-COORDINATOR_HOSTNAME = 'localhost'
-COORDINATOR_PORT = 80
-
-module.exports = { COORDINATOR_HOSTNAME, COORDINATOR_PORT};
+module.exports = {
+	COORDINATOR_HOSTNAME : 'localhost',
+	COORDINATOR_PORT : 80
+}
