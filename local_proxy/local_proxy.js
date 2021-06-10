@@ -4,8 +4,11 @@ const http = require('http')
 const net = require('net');
 const { URL } = require('url');
 const uuid = require('uuid')
+
+
 const config = require('./config')
-// todo here is the configuration, may externalize it to a config files
+const client_socket_table = require('./client_socket_table')
+
 const PROXY_HOSTNAME = config.PROXY_HOSTNAME // hostname for local browser to point to
 const PROXY_LOCAL_PORT = config.PROXY_LOCAL_PORT // port for local browser to point to
 const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
@@ -15,9 +18,7 @@ const EXTERNAL_IP_PORT_SERVICE = config.EXTERNAL_IP_PORT_SERVICE
 console.log("info", new Date().toISOString(), __filename + " starting")
 // Global variables 
 var PUBLIC_IP_PORT = {}
-// each client could be a browser
-// uuid => client(browser) socket look up table
-var client_socket_table = { }
+
 
 // TODO: make it an object
 // address and port for serverless cloud function to hit back for data tunneling. 
@@ -65,7 +66,7 @@ function startTunnelCreationService(listen_port) {
           data = req_uuid.slice(req_uuid_bytes_length)
           // once we get the uuid, we find the corresponding browser socket from the lookup table
           // TODO: externalize client socket_table to be an object for better coding practice
-          clientSocket = client_socket_table[true_req_uuid] || false
+          clientSocket = client_socket_table.getInstance().getSocket(true_req_uuid)
 
           // write data from target to client brower
           if (clientSocket == false ) {
@@ -110,10 +111,6 @@ getExternalIpPort(startTunnelCreationService)
 
 
 
-setTimeout(()=>{
-  client_socket_table= Object.fromEntries(Object.entries(client_socket_table).filter(([uuid,clientSocket]) => clientSocket.destroyed == false));
-}, config.CLEAN_LOOKUP_TABLE)
-
 // Create an HTTP tunneling proxy server
 const proxy_server = http.createServer((req, res) => {});
 
@@ -133,7 +130,7 @@ proxy_server.on('connect', (req, clientSocket, head) => {
 
   // Connect to an origin server, http or https really doesn't matter in this design
   const { port, hostname } = new URL(`http://${req.url}`);
-  var session_id = uuid.v4()
+  let session_id = client_socket_table.getInstance().addSocket(clientSocket)
 
   clientSocket.on('error', (err) => {
       console.log("error", new Date().toISOString, "clientSocket", err.lineNumber, session_id, err)
@@ -156,7 +153,6 @@ proxy_server.on('connect', (req, clientSocket, head) => {
     uuid: session_id
   }
   // make this socket available for latter reference 
-  client_socket_table[session_id] = clientSocket
 
   const scf_host_options = {
     hostname: COORDINATOR_HOSTNAME,
