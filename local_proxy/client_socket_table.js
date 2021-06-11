@@ -1,5 +1,7 @@
 const uuid = require('uuid')
 const config = require('./config')
+
+
 // each client could be a browser
 // uuid => client(browser) socket look up table
 
@@ -30,8 +32,4 @@ var instance = (function() {
 })();
 
 
-module.exports =  {
-	getInstance(){
-		return instance
-	}
-}
+module.exports =  instance 
