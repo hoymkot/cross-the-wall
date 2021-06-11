@@ -3,7 +3,14 @@ const net = require('net')
 const client_socket_table = require('./client_socket_table')
 
 
+var last_actived = Date.now()
+var server = false
+
 module.exports = {
+
+    get last_actived() {
+      return last_actived
+    } ,
     
     // start listening for connections from the Remote Coordinator. Once connected, 
     // pipe the socket of the connection with that of the corresponding client browser
@@ -20,7 +27,7 @@ module.exports = {
 
     start(listen_port) {
 
-      const server = net.createServer({}, (remote_coordinator_socket) => {
+      server = net.createServer({}, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
         const req_uuid_bytes_length = Buffer.from(uuid.v4()).length
@@ -28,6 +35,7 @@ module.exports = {
         var clientSocket = false
 
         remote_coordinator_socket.on('data', (data)=>{
+          last_actived = Date.now() 
           // once user session is identified and sockets are piped to each other. we no long run this routine. 
           if (true_req_uuid == false) { 
 
@@ -48,6 +56,11 @@ module.exports = {
               } else {
                 clientSocket.write(data) // write residual data
                 // connect client socket and Remote Coordinator socket
+
+                clientSocket.on('data', (data)=>{
+                  last_actived = Date.now()
+                })
+
                 clientSocket.pipe(remote_coordinator_socket) 
                 remote_coordinator_socket.pipe(clientSocket) 
                 // everything should be done by this point
