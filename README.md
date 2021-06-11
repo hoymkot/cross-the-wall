@@ -36,7 +36,7 @@
  
 
 ## Dependencies
-* nodejs
+* node.js v16.0.0
 * npm install uuid@8.3.2
 * npm install axios@0.21.1
 
