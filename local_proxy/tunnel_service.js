@@ -3,6 +3,7 @@ const net = require('net')
 const client_socket_table = require('./client_socket_table')
 
 
+// record the last time the port is in used. Note that NAT table records normally expires every 60 seconds. 
 var last_actived = Date.now()
 var server = false
 
@@ -57,6 +58,7 @@ module.exports = {
                 clientSocket.write(data) // write residual data
                 // connect client socket and Remote Coordinator socket
 
+                // activities with clientSocket may also be considered as using the port 
                 clientSocket.on('data', (data)=>{
                   last_actived = Date.now()
                 })
