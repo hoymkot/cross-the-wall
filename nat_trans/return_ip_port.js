@@ -14,6 +14,8 @@ http.createServer(function (req, res) {
 }).listen(config.port); 
 
 
+
+// the following is for checking whether udp keep alive packets are received. just for debuging. may remove in the future. 
 const dgram = require('dgram');
 
 const keep_nat_alive_socket = dgram.createSocket('udp6');

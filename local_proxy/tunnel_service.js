@@ -31,13 +31,13 @@ module.exports = {
 
     start(listen_port) {
 
-      const keep_nat_alive_socket = dgram.createSocket('udp6');
+      const keep_nat_alive_socket = dgram.createSocket('udp4');
       keep_nat_alive_socket.bind(listen_port)
       setInterval(()=>{
-        keep_nat_alive_socket.send('nat-keepalive', 8080, "localhost", (err) => {
+        keep_nat_alive_socket.send('nat-keepalive', config.EXTERNAL_IP_PORT_SERVICE.port, config.EXTERNAL_IP_PORT_SERVICE.ip, (err) => {
           console.log("info", new Date().toISOString(), "nat-keep-alive", "null is fine here:",err)
         })
-      }, config.NAT_KEEP_ALIVE)
+      }, config.NAT_KEEP_ALIVE_INTERVAL)
 
 
       server = net.createServer({}, (remote_coordinator_socket) => {
