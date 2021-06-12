@@ -36,9 +36,9 @@ module.exports = {
       const keep_nat_alive_socket = dgram.createSocket('udp6');
       keep_nat_alive_socket.bind(local_interface.localPort, local_interface.localAddress)
       setInterval(()=>{
-        keep_nat_alive_socket.send('nat-keepalive', config.EXTERNAL_IP_PORT_SERVICE.port, config.EXTERNAL_IP_PORT_SERVICE.ip, (err) => {
+        keep_nat_alive_socket.send('nat-keepalive', config.RETURN_IP_PORT_SERVICE.port, config.RETURN_IP_PORT_SERVICE.ip, (err) => {
           if (err == null) {
-            console.log("info", new Date().toISOString(), "nat-keep-alive", "packet sent",err)
+            console.log("info", new Date().toISOString(), "nat-keep-alive", "packet sent")
           } else {
             console.log("warn", new Date().toISOString(), "nat-keep-alive", err)
           }

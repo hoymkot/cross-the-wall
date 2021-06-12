@@ -51,14 +51,8 @@
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
 * encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection
 * live test while in firewall
-* enhance performance (in terms of speed , responsiveness)
-* increase the number of simultaneous connection
 * performance testing
-* support http2 
-* modulize all sub-components
-* NAT Mapping Service, ping a Lambda Function to keep alive. The function would reply with a pair sourice_ip and port. and notify neigher serivce the most up-to-date source_ip and port  
-* return ip port service send package to keep nat table live , every 30 seconds or 10 seconds 
-* return ip port service timeout when no response is got 
-* local_proxy renew public ip port on time out  every 50 seconds  
 * fix TODO 
+* proxy server timeout
+* heartbeat for systems
 
