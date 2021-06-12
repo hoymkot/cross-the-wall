@@ -6,7 +6,7 @@
 * able to work behind a NAT infrastructure
 
 ## Environment Issues
-* need to enable IPv6 on your operating systems (on all hosts) because it is getting more and more prevalent (google is good help)
+* need to enable IPv6 on your operating systems (on all hosts running this software) because it is getting more and more prevalent now (google is a good help)
 
 ## Dependencies
 * node.js v16.0.0
