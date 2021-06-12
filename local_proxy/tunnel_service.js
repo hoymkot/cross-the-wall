@@ -8,16 +8,8 @@ const config = require('./config')
 const client_socket_table = require('./client_socket_table')
 
 
-// record the last time the port is in used. Note that NAT table records normally expires every 60 seconds. 
-var last_actived = Date.now()
-var server = false
-
 module.exports = {
 
-    get last_actived() {
-      return last_actived
-    } ,
-    
     // start listening for connections from the Remote Coordinator. Once connected, 
     // pipe the socket of the connection with that of the corresponding client browser
     // connection (identified by a session_id received from the Remote Coordinator.) 
@@ -46,7 +38,7 @@ module.exports = {
       }, config.NAT_KEEP_ALIVE_INTERVAL)
 
 
-      server = net.createServer({}, (remote_coordinator_socket) => {
+      let server = net.createServer({}, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
         const req_uuid_bytes_length = Buffer.from(uuid.v4()).length
@@ -54,7 +46,6 @@ module.exports = {
         var clientSocket = false
 
         remote_coordinator_socket.on('data', (data)=>{
-          last_actived = Date.now() 
           // once user session is identified and sockets are piped to each other. we no long run this routine. 
           if (true_req_uuid == false) { 
 
@@ -78,7 +69,7 @@ module.exports = {
 
                 // activities with clientSocket may also be considered as using the port 
                 clientSocket.on('data', (data)=>{
-                  last_actived = Date.now()
+                  // currently no-op
                 })
 
                 clientSocket.pipe(remote_coordinator_socket) 
