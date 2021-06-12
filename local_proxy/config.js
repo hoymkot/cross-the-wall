@@ -6,6 +6,7 @@ module.exports = {
  "EXTERNAL_IP_PORT_SERVICE" : "http://localhost:8080",
  // "EXTERNAL_IP_PORT_SERVICE" : "http://34.209.251.143:8080",
  "EXTERNAL_IP_PORT_REFRESH_INTERVAL" : 5*60*1000,
- "CLEAN_LOOKUP_TABLE" : 50*1000 // update every 50 seconds that NAT table records normally expired in 60 seconds.
+ "CLEAN_LOOKUP_TABLE" : 50*1000, // update every 50 seconds that NAT table records normally expired in 60 seconds.
+ "NAT_KEEP_ALIVE" : 25*1000/50 // update every 50 seconds that NAT table records normally expired in 60 seconds.
 
 }

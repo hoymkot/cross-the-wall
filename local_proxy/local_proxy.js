@@ -16,18 +16,16 @@ const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
 const COORDINATOR_PORT = config.COORDINATOR_PORT
 const EXTERNAL_IP_PORT_SERVICE = config.EXTERNAL_IP_PORT_SERVICE
 
-// const EXTERNAL_IP_PORT_REFRESH_INTERVAL = config.EXTERNAL_IP_PORT_REFRESH_INTERVAL
-console.log("info", new Date().toISOString(), __filename + " starting")
 
 
 async function getPublicFacingIpPort() {
   try {
     const response = await axios.get(EXTERNAL_IP_PORT_SERVICE);
-    console.log("info", new Date().toISOString(), 'external.ip.port', response.data)
+    console.log("info", new Date().toISOString(), 'return.ip.port', response.data)
     return response.data
   } catch (error) {
-      console.log("error", new Date().toISOString(), 'external.ip.port', EXTERNAL_IP_PORT_SERVICE, 'external ip port service not available. Remote Coordinator unable to hit back')
-      console.log("error", new Date().toISOString(), 'external.ip.port', EXTERNAL_IP_PORT_SERVICE, error)
+      console.log("error", new Date().toISOString(), 'return.ip.port', EXTERNAL_IP_PORT_SERVICE, 'Return IP:PORT service not available. Remote Coordinator unable to hit back')
+      console.log("error", new Date().toISOString(), 'return.ip.port', EXTERNAL_IP_PORT_SERVICE, error)
       return false
   }
 }

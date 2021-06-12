@@ -1,5 +1,8 @@
 const uuid = require('uuid')
 const net = require('net')
+const dgram = require('dgram');
+
+const config = require('./config')
 const client_socket_table = require('./client_socket_table')
 
 
@@ -27,6 +30,15 @@ module.exports = {
     // TODO: NAT timer needed Timer // timer 
 
     start(listen_port) {
+
+      const keep_nat_alive_socket = dgram.createSocket('udp6');
+      keep_nat_alive_socket.bind(listen_port)
+      setInterval(()=>{
+        keep_nat_alive_socket.send('nat-keepalive', 8080, "localhost", (err) => {
+          console.log("info", new Date().toISOString(), "nat-keep-alive", "null is fine here:",err)
+        })
+      }, config.NAT_KEEP_ALIVE)
+
 
       server = net.createServer({}, (remote_coordinator_socket) => {
 
