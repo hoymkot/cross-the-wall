@@ -12,14 +12,17 @@
 ### Local Proxy 
 * live behind a firewall, run on a personal computer
 * act as a ordinary http proxy for a ordinary client web browser like Firefox. 
-* startup workflow 
-** ask IP:Port Reporting Service for public facing IP and port and open a NAT tunnel, and record the local port used in this request. (Google NAT Transveral for more information)
-** create a serivce (Tunnel Creation Service) that listened on the previously recorded local port. This service build communication tunnels between the web browser and the target web site.
-** when the Tunnel Creation Service is created, start a timer (configurable). Whenever this service receives a packet, renew this timer. On timeout, close the service and restart this workflow. 
-* Normal Workflow (when the client browser sends a request)
-** on every request (connection) from the web browser, create a session id, and record it and the socket of this connection on a lookup table. 
-** send target web site info, the public facing IP:Port, and the session id to the Remote Coordinator 
-** have Tunnel Creation Service to wait for a seperation connection from the Remote Coordinator. Now the Remote Coordinator acts as a reverse proxy for the target web server. When connected, the Remote Coordinator first sends a session id to identify the corresponding browser socket, and the rest is data from the target web server. After getting session id, the Tunnel Creation Service connect the socket of this connection to that of the corresponing web browser connection. Pipe them together, and now we have a tunnel to handle to a single browers-website request. 
+* contains startup workflow and normal workflow
+
+#### Startup Workflow (when the program starts up) 
+* ask IP:Port Reporting Service for public facing IP and port and open a NAT tunnel, and record the local port used in this request. (Google NAT Transveral for more information)
+* create a serivce (Tunnel Creation Service) that listened on the previously recorded local port. This service build communication tunnels between the web browser and the target web site.
+* when the Tunnel Creation Service is created, start a timer (configurable). Whenever this service receives a packet, renew this timer. On timeout, close the service and restart this workflow. 
+
+#### Normal Workflow (when the client browser sends a request)
+* on every request (connection) from the web browser, create a session id, and record it and the socket of this connection on a lookup table. 
+* send target web site info, the public facing IP:Port, and the session id to the Remote Coordinator 
+* have Tunnel Creation Service to wait for a seperation connection from the Remote Coordinator. Now the Remote Coordinator acts as a reverse proxy for the target web server. When connected, the Remote Coordinator first sends a session id to identify the corresponding browser socket, and the rest is data from the target web server. After getting session id, the Tunnel Creation Service connect the socket of this connection to that of the corresponing web browser connection. Pipe them together, and now we have a tunnel to handle to a single browers-website request. 
 
 
 ### Remote Coordinator
