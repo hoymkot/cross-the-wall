@@ -1,3 +1,5 @@
+'use strict'
+
 const uuid = require('uuid')
 const net = require('net')
 const dgram = require('dgram');
@@ -29,13 +31,17 @@ module.exports = {
     //
     // TODO: NAT timer needed Timer // timer 
 
-    start(listen_port) {
+    start(local_interface) {
 
-      const keep_nat_alive_socket = dgram.createSocket('udp4');
-      keep_nat_alive_socket.bind(listen_port)
+      const keep_nat_alive_socket = dgram.createSocket('udp6');
+      keep_nat_alive_socket.bind(local_interface.localPort, local_interface.localAddress)
       setInterval(()=>{
         keep_nat_alive_socket.send('nat-keepalive', config.EXTERNAL_IP_PORT_SERVICE.port, config.EXTERNAL_IP_PORT_SERVICE.ip, (err) => {
-          console.log("info", new Date().toISOString(), "nat-keep-alive", "null is fine here:",err)
+          if (err == null) {
+            console.log("info", new Date().toISOString(), "nat-keep-alive", "packet sent",err)
+          } else {
+            console.log("warn", new Date().toISOString(), "nat-keep-alive", err)
+          }
         })
       }, config.NAT_KEEP_ALIVE_INTERVAL)
 
@@ -85,7 +91,7 @@ module.exports = {
         })
 
         remote_coordinator_socket.on('error', (err)=>{
-          console.log("warning", new Date().toISOString, "remote_coordinator_socket", err.lineNumber, err)
+          console.log("warn", new Date().toISOString, "remote_coordinator_socket", err.lineNumber, err)
         })
 
       });
@@ -95,7 +101,10 @@ module.exports = {
       });
 
 
-      server.listen(listen_port, () => {});
+      server.listen({ 
+        port: local_interface.localPort,
+        host: local_interface.localAddress
+      }, () => {});
 
     }
 }

@@ -21,13 +21,26 @@ const EXTERNAL_IP_PORT_SERVICE = config.EXTERNAL_IP_PORT_SERVICE
 async function getPublicFacingIpPort() {
   try {
     let link = "http://["+config.EXTERNAL_IP_PORT_SERVICE.ip+"]:"+config.EXTERNAL_IP_PORT_SERVICE.port
-
-    console.log(link)
+    console.log("info", new Date().toISOString(), 'return.ip.port', link)
     const response = await axios.get(link);
     console.log("info", new Date().toISOString(), 'return.ip.port', response.data)
-    return response.data
+    let s = response.request.socket
+    let localPort = s.localPort
+    let localAddress = s.localAddress
+    await new Promise((resolve, reject) => {
+                              s.on("close" , ()=>{
+                                resolve(true)
+                              })
+                              s.destroy()      
+                            });
+    return {
+      ip: response.data.ip,
+      port: response.data.port,
+      localPort: localPort,
+      localAddress: localAddress
+    }
   } catch (error) {
-      console.log("error", new Date().toISOString(), 'return.ip.port', config.EXTERNAL_IP_PORT_SERVICE, 'Return IP:PORT service not available. Remote Coordinator unable to hit back', error)
+      console.log("error", new Date().toISOString(), 'return.ip.port', config.EXTERNAL_IP_PORT_SERVICE, error)
       return false
   }
 }
@@ -117,13 +130,15 @@ function proxyServer(public_ip_port) {
 // wrapping the main code in async because we want to have some sequential actions for better readability
 (async () => { 
 
-  let public_ip_port = await getPublicFacingIpPort()
-  if (public_ip_port == false) {
-      console.log("error", new Date().toISOString(), 'system shuts down now')
+  let network_interface_info = await getPublicFacingIpPort()
+  if (network_interface_info == false) {
+      console.log("error", new Date().toISOString(), 'main', 'Return IP:PORT service not available. Remote Coordinator unable to hit back')
+      console.log("error", new Date().toISOString(), 'main', 'system shuts down now')
       process.exit(0)
   } else {
-    tunnel_service.start(public_ip_port.port)
-    proxyServer(public_ip_port)
+    console.log("info", new Date().toISOString(), 'network_interface_info', network_interface_info)
+    tunnel_service.start(network_interface_info)
+    proxyServer(network_interface_info)
   }
 
 })() 

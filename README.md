@@ -5,9 +5,13 @@
 * each service component can run independently (loose coupling).
 * able to work behind a NAT infrastructure
 
+## Environment Issues
+* need to enable IPv6 on your operating systems (on all hosts) because it is getting more and more prevalent (google is good help)
 
-## Operating System Configurations 
-* need to enable IPv6 as it is getting more prevalent
+## Dependencies
+* node.js v16.0.0
+* npm install uuid@8.3.2
+* npm install axios@0.21.1
 
 ## Technial Specification 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
@@ -39,14 +43,10 @@
 * Local Proxy accesses this service to get its current public facing IP and port and open a NAT trasveral tunnel  
 * This IP:Port frequently send packets to Local Proxy to keep NAT table record alive. If it hears no reply from Local Proxy, stop sending packets. 
 
- 
 
-## Dependencies
-* node.js v16.0.0
-* npm install uuid@8.3.2
-* npm install axios@0.21.1
 
 ## Todo
+* package.json - auto install 
 * Instrument -- or maybe autorestart when memory footprint is too big ? 
 * encrpyt target web site sent from Local Proxy to Remote Coordinator
 * encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection

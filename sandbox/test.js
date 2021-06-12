@@ -10,6 +10,9 @@ const options = {
 
 const req = http.request(options, (res) => {
   console.log(`STATUS: ${res.statusCode}`);
+  console.log(`ip: ${res.socket.localAddress}`);
+  console.log(`port: ${res.socket.localPort}`);
+
   console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
   res.setEncoding('utf8');
   res.on('data', (chunk) => {
@@ -26,3 +29,4 @@ req.on('error', (e) => {
 
 // Write data to request body
 req.end();
+

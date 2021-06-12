@@ -1,3 +1,5 @@
+'use strict'
+
 const http = require('http');
 const config = require('./config')
 // return the requester IP (v6) and port for NAT penetration

@@ -1,3 +1,5 @@
+'use strict'
+
 module.exports = {
  "PROXY_HOSTNAME" : "localhost", // hostname for local browser to point to
  "PROXY_LOCAL_PORT" : 1337, // port for local browser to point to

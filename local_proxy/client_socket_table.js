@@ -1,3 +1,6 @@
+'use strict'
+
+
 const uuid = require('uuid')
 const config = require('./config')
 
