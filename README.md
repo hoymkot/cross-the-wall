@@ -6,6 +6,9 @@
 * able to work behind a NAT infrastructure
 
 
+## Operating System Configurations 
+* need to enable IPv6 as it is getting more prevalent
+
 ## Technial Specification 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
 

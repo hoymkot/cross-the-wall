@@ -56,7 +56,7 @@ const proxy = http.createServer((req, res) => {
                     sockets[0].pipe(sockets[1])
                     sockets[1].pipe(sockets[0])
                 }).catch((err) => {
-                    console.log("warning", session_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge")
+                    console.log("warning", session_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
                 })
 
         });

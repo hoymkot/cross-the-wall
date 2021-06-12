@@ -20,7 +20,7 @@ const EXTERNAL_IP_PORT_SERVICE = config.EXTERNAL_IP_PORT_SERVICE
 
 async function getPublicFacingIpPort() {
   try {
-    let link = "http://"+config.EXTERNAL_IP_PORT_SERVICE.ip+":"+config.EXTERNAL_IP_PORT_SERVICE.port
+    let link = "http://["+config.EXTERNAL_IP_PORT_SERVICE.ip+"]:"+config.EXTERNAL_IP_PORT_SERVICE.port
 
     console.log(link)
     const response = await axios.get(link);
