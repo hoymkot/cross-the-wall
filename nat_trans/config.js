@@ -1,3 +1,3 @@
 module.exports = {
- "port" : 80, // the listening port 
+ "port" : 8080, // the listening port 
 }
