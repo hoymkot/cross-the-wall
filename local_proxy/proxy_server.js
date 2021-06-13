@@ -45,7 +45,7 @@ module.exports = {
 
 
         var connection_info = {
-          proxy_hostname: network_interface_info.ip, // let Remote coordinator to hit back to build tunnels 
+          proxy_hostname: network_interface_info.ip, // let Remote coordinator to callback to build tunnels 
           proxy_port: network_interface_info.port, 
           target_host_name: hostname,
           target_port: port,
@@ -53,31 +53,32 @@ module.exports = {
         }
         // make this socket available for latter reference 
 
-        const scf_host_options = {
+        const coordinator_host_options = {
           hostname: config.COORDINATOR_HOSTNAME,
           port: config.COORDINATOR_PORT,
           method: 'POST',
           rejectUnauthorized: config.ACCEPT_SELF_SIGNED_CERT == false ,  
         }
 
-        const scf_request = https.request(scf_host_options, res => {
+        const coordinator_request = https.request(coordinator_host_options, res => {
+          console.log("info", new Date().toISOString(), 'coordinator_request',session_id, `accessed coordinator statusCode: ${res.statusCode}`)
           if (res.statusCode != 200) {
-            console.log("error", new Date().toISOString(), 'scf_request',session_id, "statusCode: " + res.statusCode)
+            console.log("error", new Date().toISOString(), 'coordinator_request',session_id, "statusCode: " + res.statusCode)
             var data = Buffer.from('')
             res.on('data', d => {
               data = Buffer.concat([data, d])
             })
             res.on("end", ()=> {
-              console.log("error", new Date().toISOString(), 'scf_request', session_id,"body: " + data.toString())
+              console.log("error", new Date().toISOString(), 'coordinator_request', session_id,"body: " + data.toString())
             })
           }
 
         })
         // send callback info and target info to the remote coordinator 
-        scf_request.write(Buffer.from(JSON.stringify(connection_info)))
-        scf_request.end()
-        scf_request.on("error", (err) => {
-          console.log("error", new Date().toISOString(), 'scf_request', session_id,err)
+        coordinator_request.write(Buffer.from(JSON.stringify(connection_info)))
+        coordinator_request.end()
+        coordinator_request.on("error", (err) => {
+          console.log("error", new Date().toISOString(), 'coordinator_request', session_id,err)
         })
 
       });

@@ -7,6 +7,7 @@
 
 ## Environment Issues
 * need to enable IPv6 on your operating systems (on all hosts running this software) because it is getting more and more prevalent now (google is a good help). Note that some os requires you to manually enable 
+* if you don't want to use self-sign certificate in the communication between the Local Proxy and the Remote Coordinator, please disable it in the configuration file. Then the Local Proxy only accept certificates from trusted CA (Certificate Authorities)
 
 ## Troubleshooting 
 * if the Local Proxy cannot receive requests from the Remote Coordinator, go the log and find the public facing listening port and check if the port is still accepting outbound requests. If not, try setting NAT_KEEP_ALIVE_INTERVAL to 1000 to update the corresponding NAT table record every second. If this helps, increase NAT_KEEP_ALIVE_INTERVAL to a number that still gives acceptable performance without degrading the network. 
@@ -22,6 +23,7 @@
 ### Local Proxy 
 * live behind a firewall, run on a personal computer
 * act as a ordinary http proxy for a ordinary client web browser like Firefox. 
+* use https to access the Remote Coordinator. Note that you don't want to accept self-sign certificates, please disable them in the configuration file. 
 * contains startup workflow and normal workflow
 
 #### Startup Workflow (when the program starts up) 
@@ -37,10 +39,12 @@
 
 ### Remote Coordinator
 * live outside of the firewall
+* a https server, user can use their openssl key pair. 
 * accept target web site info from Local Proxy 
 * connect to the target web server
 * connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
 * bridge the communication between Local Proxy and target web server. (Build a tunneling) 
+
 
 ### IP:Port Reporting Service
 * Local Proxy accesses this service to get its current public facing IP and port and open a NAT trasveral tunnel  
@@ -49,19 +53,14 @@
 
 
 ## Todo
-* package.json - auto install 
-* Instrument -- or maybe autorestart when memory footprint is too big ? 
-* encrpyt target web site sent from Local Proxy to Remote Coordinator
+* package.json - auto install  - global install - npm 
 * encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection
 * live test while in firewall
 * performance testing
 * fix TODO 
 * proxy server timeout
 * heartbeats for systems
-* key gen utililty
-* encrypt with symmetric key with web-crypto-api
-* HTTPS for coordinator 
-* Option for HTTP or HTTPs for local proxy 
-* SSL port and non ssL port for remote coordinator
-* incorporate express to major ends point for common error handling
-* test with real certificate // hit google see if it passes. 
+* encrypt with symmetric key with web-crypto-api (stream cipher )
+* incorporate express to major http ends point for common error handling and logging
+* make return ip port https (if theres is a need)
+* certificate pinning

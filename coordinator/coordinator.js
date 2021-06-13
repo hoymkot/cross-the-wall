@@ -20,12 +20,13 @@ const options = {
 
 // create a server that accept callback info and target info from local proxy 
 const coordinator = https.createServer(options, (req, res) => {
-    const session_id = uuid.v4() // identifier for this session
+    const request_id = uuid.v4() // identifier for this request to link related logs
     if (req.method === "GET") {
-        console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"invalid request ")
+        console.log("info", request_id, new Date().toISOString(), req.connection.remoteAddress,"invalid request ")
         res.writeHead(400, {});
         res.end()
     } else if (req.method === "POST") {
+        console.log("info", request_id, new Date().toISOString(),"accepting request from ", req.connection.remoteAddress)
         // body should hold callback info and target info from local proxy
         var body = "";
         req.on("data", function(chunk) {
@@ -36,7 +37,7 @@ const coordinator = https.createServer(options, (req, res) => {
 
             // TODO: decrypt target_connection_info 
             var target_connection_info = JSON.parse(body.toString())
-            console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
+            console.log("info", request_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
 
 
             var proxyPromise = new Promise((resolve, reject) => {
@@ -44,7 +45,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     resolve(proxySocket)
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("info",session_id, new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
+                    console.log("info",request_id, new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
                     reject(err)
                 })
             })
@@ -56,7 +57,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     // TODO:error handling
                 })
                 targetSocket.on("error", (err) => {
-                    console.log("info", session_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
+                    console.log("info", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
                     reject(err)
                 })
             })
@@ -67,7 +68,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     sockets[0].pipe(sockets[1])
                     sockets[1].pipe(sockets[0])
                 }).catch((err) => {
-                    console.log("warning", session_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
+                    console.log("warning", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
                 })
 
         });
