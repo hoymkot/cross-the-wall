@@ -1,4 +1,5 @@
 const { URL } = require('url');
+const https = require('https')
 const http = require('http')
 
 const config = require('./config')
@@ -36,7 +37,7 @@ module.exports = {
         // accepted a connection from a browser
         // TODO: may make one for HTTP/2 in the future 
         clientSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-                          'Proxy-agent: Node.js-Proxy\r\n' +
+                          'Proxy-agent: Cross-The-Wall-HTTP-Proxy\r\n' +
                           '\r\n');
 
         console.log("info", new Date().toISOString(), 'req.url',session_id, req.url)
@@ -44,8 +45,8 @@ module.exports = {
 
 
         var connection_info = {
-          proxy_hostname: network_interface_info.ip,
-          proxy_port: network_interface_info.port, // todo there is another reference at scf_target_listener
+          proxy_hostname: network_interface_info.ip, // let Remote coordinator to hit back to build tunnels 
+          proxy_port: network_interface_info.port, 
           target_host_name: hostname,
           target_port: port,
           uuid: session_id
@@ -55,10 +56,11 @@ module.exports = {
         const scf_host_options = {
           hostname: config.COORDINATOR_HOSTNAME,
           port: config.COORDINATOR_PORT,
-          method: 'POST'
+          method: 'POST',
+          rejectUnauthorized: config.ACCEPT_SELF_SIGNED_CERT == false ,  
         }
 
-        const scf_request = http.request(scf_host_options, res => {
+        const scf_request = https.request(scf_host_options, res => {
           if (res.statusCode != 200) {
             console.log("error", new Date().toISOString(), 'scf_request',session_id, "statusCode: " + res.statusCode)
             var data = Buffer.from('')

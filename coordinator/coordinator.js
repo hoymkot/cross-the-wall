@@ -1,16 +1,25 @@
  'use strict'
 
-const http = require('http');
+const https = require('https');
 const net = require('net');
-const {URL} = require('url');
-const config = require('./config')
 const uuid = require('uuid')
+const fs = require('fs');
+
+const config = require('./config')
+
 
 const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
 const COORDINATOR_PORT = config.COORDINATOR_PORT
 
+
+const options = {
+  key: fs.readFileSync(config.KEY_FILE),
+  cert: fs.readFileSync(config.CERT_FILE)
+};
+
+
 // create a server that accept callback info and target info from local proxy 
-const coordinator = http.createServer((req, res) => {
+const coordinator = https.createServer(options, (req, res) => {
     const session_id = uuid.v4() // identifier for this session
     if (req.method === "GET") {
         console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"invalid request ")

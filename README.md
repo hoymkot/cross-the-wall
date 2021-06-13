@@ -8,6 +8,9 @@
 ## Environment Issues
 * need to enable IPv6 on your operating systems (on all hosts running this software) because it is getting more and more prevalent now (google is a good help). Note that some os requires you to manually enable 
 
+## Troubleshooting 
+* if the Local Proxy cannot receive requests from the Remote Coordinator, go the log and find the public facing listening port and check if the port is still accepting outbound requests. If not, try setting NAT_KEEP_ALIVE_INTERVAL to 1000 to update the corresponding NAT table record every second. If this helps, increase NAT_KEEP_ALIVE_INTERVAL to a number that still gives acceptable performance without degrading the network. 
+
 ## Dependencies
 * node.js v16.0.0
 * npm install uuid@8.3.2
@@ -57,4 +60,8 @@
 * heartbeats for systems
 * key gen utililty
 * encrypt with symmetric key with web-crypto-api
-
+* HTTPS for coordinator 
+* Option for HTTP or HTTPs for local proxy 
+* SSL port and non ssL port for remote coordinator
+* incorporate express to major ends point for common error handling
+* test with real certificate // hit google see if it passes. 
