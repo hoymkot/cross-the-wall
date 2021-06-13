@@ -1,5 +1,5 @@
 
-// wrapping the main code in async because we want to have some sequential actions for better readability
+// wrapping the main code in an async function because we want to have some sequential actions for better readability
 // (async () => { 
 (async () => { 
   const config = require('./config')

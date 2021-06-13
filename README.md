@@ -54,5 +54,7 @@
 * performance testing
 * fix TODO 
 * proxy server timeout
-* heartbeat for systems
+* heartbeats for systems
+* key gen utililty
+* encrypt with symmetric key with web-crypto-api
 

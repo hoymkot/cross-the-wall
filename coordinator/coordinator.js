@@ -1,4 +1,4 @@
-'use strict'
+ 'use strict'
 
 const http = require('http');
 const net = require('net');
@@ -10,7 +10,7 @@ const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
 const COORDINATOR_PORT = config.COORDINATOR_PORT
 
 // create a server that accept callback info and target info from local proxy 
-const proxy = http.createServer((req, res) => {
+const coordinator = http.createServer((req, res) => {
     const session_id = uuid.v4() // identifier for this session
     if (req.method === "GET") {
         console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"invalid request ")
@@ -24,6 +24,8 @@ const proxy = http.createServer((req, res) => {
         });
 
         req.on("end", function() {
+
+            // TODO: decrypt target_connection_info 
             var target_connection_info = JSON.parse(body.toString())
             console.log("info", session_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
 
@@ -63,11 +65,13 @@ const proxy = http.createServer((req, res) => {
     }
 });
 
+coordinator.on("error", (err)=>{
+    console.log("error", new Date().toISOString(),  err.toString())    
+})
+
+
 // Now that proxy is running
-proxy.listen(COORDINATOR_PORT, COORDINATOR_HOSTNAME, () => {
+coordinator.listen(COORDINATOR_PORT, COORDINATOR_HOSTNAME, () => {
     console.log("info", new Date().toISOString(), "coordinator started ")
 });
 
-proxy.on("error", (err)=>{
-    console.log("error", new Date().toISOString(),  err.toString())    
-})
