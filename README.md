@@ -35,6 +35,7 @@
 * on every request (connection) from the web browser, create a session id, and record it and the socket of this connection on a lookup table. 
 * send target web site info, the public facing IP:Port, and the session id to the Remote Coordinator 
 * have Tunnel Creation Service to wait for a seperation connection from the Remote Coordinator. Now the Remote Coordinator acts as a reverse proxy for the target web server. When connected, the Remote Coordinator first sends a session id to identify the corresponding browser socket, and the rest is data from the target web server. After getting session id, the Tunnel Creation Service connect the socket of this connection to that of the corresponing web browser connection. Pipe them together, and now we have a tunnel to handle to a single browers-website request. 
+* communication between the Local Proxy and the Remote Coordinator is encrypted 
 
 
 ### Remote Coordinator
@@ -44,25 +45,23 @@
 * connect to the target web server
 * connect back to Local Proxy separately ( may isolate this part as a standalone service for scalability )
 * bridge the communication between Local Proxy and target web server. (Build a tunneling) 
+* communication between the Local Proxy and the Remote Coordinator is encrypted 
 
 
 ### IP:Port Reporting Service
 * Local Proxy accesses this service to get its current public facing IP and port and open a NAT trasveral tunnel  
 * This IP:Port frequently send packets to Local Proxy to keep NAT table record alive. If it hears no reply from Local Proxy, stop sending packets. 
+* if the Remote Coordinator is a Serverless Cloud Function, IP:Port Reporting is a standalone service. Otherwise, they can combine. 
 
 
 
 ## Todo
 * package.json - auto install  - global install - npm 
-* encrypt communication between  Local Proxy and Remote Coordinator for evading firewall inspection
-* live test while in firewall
+* live test behind firewall
 * performance testing
 * fix TODO 
 * proxy server timeout
 * heartbeats for systems
-* encrypt with symmetric key with web-crypto-api (stream cipher )
 * incorporate express to major http ends point for common error handling and logging
-* make return ip port https (if theres is a need)
 * combine Return IP:Port and Remote Coordinator
-* Communication between Remote Coordinator and Local Proxy must be encrypted
-* Remote Coordinator and Local Proxy Result TLS session, Perfect Future Secrecy
+* Remote Coordinator and Local Proxy reuse TLS session, Perfect Future Secrecy, better performance
