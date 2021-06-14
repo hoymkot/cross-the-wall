@@ -1,4 +1,4 @@
-const { URL } = require('url');
+const { URL } = require('url')
 const https = require('https')
 const http = require('http')
 
@@ -10,7 +10,7 @@ module.exports = {
 
   start(network_interface_info){
 
-      // Create an HTTP tunneling proxy server
+      // Create an HTTP tunneling proxy server, doesn't need to be HTTPS because it is like to run on the same host as the browser
       const proxy_server = http.createServer((req, res) => {});
 
       // Now that proxy is running

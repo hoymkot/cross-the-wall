@@ -2,7 +2,9 @@
 
 const uuid = require('uuid')
 const net = require('net')
-const dgram = require('dgram');
+const dgram = require('dgram')
+const fs = require('fs')
+const tls = require('tls')
 
 const config = require('./config')
 const client_socket_table = require('./client_socket_table')
@@ -38,7 +40,12 @@ module.exports = {
       }, config.NAT_KEEP_ALIVE_INTERVAL)
 
 
-      let server = net.createServer({}, (remote_coordinator_socket) => {
+      let options = {
+        key: fs.readFileSync(config.KEY_FILE),
+        cert: fs.readFileSync(config.CERT_FILE)
+      }
+
+      let server = tls.createServer(options, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
         const req_uuid_bytes_length = Buffer.from(uuid.v4()).length

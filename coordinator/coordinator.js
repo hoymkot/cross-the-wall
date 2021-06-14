@@ -4,6 +4,7 @@ const https = require('https');
 const net = require('net');
 const uuid = require('uuid')
 const fs = require('fs');
+const tls = require('tls');
 
 const config = require('./config')
 
@@ -41,11 +42,23 @@ const coordinator = https.createServer(options, (req, res) => {
 
 
             var proxyPromise = new Promise((resolve, reject) => {
-                var proxySocket = net.connect(target_connection_info['proxy_port'] || 80, target_connection_info['proxy_hostname'], () => {
+                let options = {
+                    key: fs.readFileSync(config.KEY_FILE),
+                    cert: fs.readFileSync(config.CERT_FILE),
+                    host: target_connection_info['proxy_hostname'],
+                    port: target_connection_info['proxy_port'],
+                    checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
+                    // ca: [ fs.readFileSync(config.CERT_FILE) ], // not nec
+                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have certs
+                }                    
+
+
+                var proxySocket = tls.connect( options, () => {
+                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" , proxySocket.authorized ? 'authorized' : 'unauthorized')
                     resolve(proxySocket)
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("info",request_id, new Date().toISOString(), "proxySocket", target_connection_info.proxy_hostname, err)
+                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, err)
                     reject(err)
                 })
             })

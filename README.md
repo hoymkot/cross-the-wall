@@ -64,3 +64,5 @@
 * incorporate express to major http ends point for common error handling and logging
 * make return ip port https (if theres is a need)
 * combine Return IP:Port and Remote Coordinator
+* Communication between Remote Coordinator and Local Proxy must be encrypted
+* Remote Coordinator and Local Proxy Result TLS session, Perfect Future Secrecy
