@@ -106,7 +106,7 @@ let ip_port = http.createServer(function (req, res) {
 
   res.write(JSON.stringify(o)); //write a response to the client
   res.end(); 
-}).listen(config.port); 
+}).listen(config.RETURN_IP_PORT_PORT); 
 
 ip_port.on('error', (err) => {
         console.log("error", new Date().toISOString, __filename, err)

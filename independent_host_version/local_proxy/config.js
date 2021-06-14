@@ -7,8 +7,8 @@ module.exports = {
 	KEY_FILE : 'key.pem',
 	CERT_FILE : 'cert.pem', 
 
-	COORDINATOR_HOSTNAME : "localhost",
-	COORDINATOR_PORT : 80,
+	COORDINATOR_HOSTNAME : "[2600:1f14:ca1:de00:639d:c0ab:7bad:d37b]",
+	COORDINATOR_PORT : 8081,
 	ACCEPT_SELF_SIGNED_CERT : true,  
 	
 	RETURN_IP_PORT_SERVICE : { ip: "[2600:1f14:ca1:de00:639d:c0ab:7bad:d37b]", port: "8080"}, 
