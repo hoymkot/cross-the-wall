@@ -1,16 +1,13 @@
  'use strict'
 
 const https = require('https');
+const http = require('http');
 const net = require('net');
 const uuid = require('uuid')
 const fs = require('fs');
 const tls = require('tls');
 
 const config = require('./config')
-
-
-const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
-const COORDINATOR_PORT = config.COORDINATOR_PORT
 
 
 const options = {
@@ -94,7 +91,23 @@ coordinator.on("error", (err)=>{
 
 
 // Now that proxy is running
-coordinator.listen(COORDINATOR_PORT, COORDINATOR_HOSTNAME, () => {
+coordinator.listen(config.COORDINATOR_PORT, () => {
     console.log("info", new Date().toISOString(), "coordinator started ")
 });
 
+
+
+let ip_port = http.createServer(function (req, res) {
+  var o = {
+    'ip': (res.socket.remoteAddress),
+    'port' : (res.socket.remotePort),
+  }
+  console.log("info", new Date().toISOString(), 'ip.port',o)
+
+  res.write(JSON.stringify(o)); //write a response to the client
+  res.end(); 
+}).listen(config.port); 
+
+ip_port.on('error', (err) => {
+        console.log("error", new Date().toISOString, __filename, err)
+});
