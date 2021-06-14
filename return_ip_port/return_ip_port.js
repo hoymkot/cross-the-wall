@@ -4,7 +4,7 @@ const http = require('http');
 const config = require('./config')
 // return the requester IP (v6) and port for NAT penetration
 
-http.createServer(function (req, res) {
+let server = http.createServer(function (req, res) {
   var o = {
   	'ip': (res.socket.remoteAddress),
   	'port' : (res.socket.remotePort),
@@ -15,13 +15,15 @@ http.createServer(function (req, res) {
   res.end(); 
 }).listen(config.port); 
 
-
+server.on('error', (err) => {
+        console.log("error", new Date().toISOString, __filename, err)
+});
 
 // the following is for checking whether udp keep alive packets are received. just for debuging. may remove in the future. 
-const dgram = require('dgram');
+// const dgram = require('dgram');
 
-const keep_nat_alive_socket = dgram.createSocket('udp6');
-keep_nat_alive_socket.on('message', (msg, rinfo) => {
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-});
-keep_nat_alive_socket.bind(config.port);
+// const keep_nat_alive_socket = dgram.createSocket('udp6');
+// keep_nat_alive_socket.on('message', (msg, rinfo) => {
+//   console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
+// });
+// keep_nat_alive_socket.bind(config.port);
