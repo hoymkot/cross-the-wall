@@ -42,7 +42,9 @@ module.exports = {
 
       let options = {
         key: fs.readFileSync(config.KEY_FILE),
-        cert: fs.readFileSync(config.CERT_FILE)
+        cert: fs.readFileSync(config.CERT_FILE),
+        // requestCert : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify client certificate
+        // rejectUnauthorized : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify remote coordinator if vailid ca is available
       }
 
       let server = tls.createServer(options, (remote_coordinator_socket) => {

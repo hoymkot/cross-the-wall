@@ -65,4 +65,8 @@
 * incorporate express to major http ends point for common error handling and logging
 * combine Return IP:Port and Remote Coordinator
 * Remote Coordinator and Local Proxy reuse TLS session, Perfect Future Secrecy, better performance
-* proxy server remote ip:port return error keep retrying for a pre-set number of times. 
+* proxy server remote ip:port return error keep retrying for a pre-set number of times.
+* move it to SCF to have a test run 
+* two version 
+*** aws lambda version , with user defined NAT 
+*** independent hosting, can optimize this project 
