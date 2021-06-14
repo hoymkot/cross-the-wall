@@ -63,4 +63,4 @@
 * encrypt with symmetric key with web-crypto-api (stream cipher )
 * incorporate express to major http ends point for common error handling and logging
 * make return ip port https (if theres is a need)
-* certificate pinning
+* combine Return IP:Port and Remote Coordinator
