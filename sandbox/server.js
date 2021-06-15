@@ -15,34 +15,17 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
   var options = {
     port: rinfo.port,
     host: rinfo.address,
-    // method: 'CONNECT',    
-  };
-	// options = {
-	//   host: 'www.google.com',
-	// };
+	localPort: config.SERVER_PORT
+  }
 
- 	const req = http.request(options);
-	req.socket.localPort = (config.SERVER_PORT)
-	req.on("error", (err) => {
-	  console.log("Error: " + err.message);
+	var callback = net.connect( options, () => {
+	    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
+	    resolve(proxySocket)
 	})
-	req.end();
-
-	  req.on('connect', (res, socket, head) => {
-	    console.log('got connected!');
-
-	    // Make a request over an HTTP tunnel
-	    socket.write('GET / HTTP/1.1\r\n' +
-	                 'Host: www.google.com:80\r\n' +
-	                 'Connection: close\r\n' +
-	                 '\r\n');
-	    socket.on('data', (chunk) => {
-	      console.log(chunk.toString());
-	    });
-	    socket.on('end', () => {
-	      proxy.close();
-	    });
-	  });
+	callback.on("error", (err) => {
+	    console.log("warning",request_id, new Date().toISOString(), "proxySocket", options, err)
+	    reject(err)
+	})
 	// req.on("error", (err) => {
  //  		console.log("Error: " + err.message);
 	// });
