@@ -15,12 +15,12 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
   var options = {
     port: rinfo.port,
     host: rinfo.address,
-    method: 'CONNECT',    
+    // method: 'CONNECT',    
   };
 
-	options = {
-	  host: 'www.google.com',
-	};
+	// options = {
+	//   host: 'www.google.com',
+	// };
 	const req = http.get(options);
 	req.end();
 	req.once('response', (res) => {
