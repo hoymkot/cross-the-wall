@@ -23,22 +23,22 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
 
 
 	const req = http.get(options,  (resp) => {
-  let data = '';
+  		let data = '';
 
-  // A chunk of data has been received.
-  resp.on('data', (chunk) => {
-  	console.log("hello")
-    data += chunk;
-  });
+		  // A chunk of data has been received.
+		  resp.on('data', (chunk) => {
+		  	console.log("hello")
+		    data += chunk;
+		  });
 
-  // The whole response has been received. Print out the result.
-  resp.on('end', () => {
-  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
-  });
+		  // The whole response has been received. Print out the result.
+		  resp.on('end', () => {
+		  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
+		  });
 
-}).on("error", (err) => {
-  console.log("Error: " + err.message);
-});
+	}).on("error", (err) => {
+	  console.log("Error: " + err.message);
+	});
 	// req.on("error", (err) => {
  //  		console.log("Error: " + err.message);
 	// });
