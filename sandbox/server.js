@@ -15,6 +15,7 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
   const options = {
     port: rinfo.port,
     host: rinfo.address,
+    method: 'CONNECT',    
   };
 
   const req = http.request(options);
