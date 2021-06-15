@@ -22,7 +22,7 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
 	// };
 
  	const req = http.request(options);
-	req.socket.bind(config.SERVER_PORT)
+	req.socket.localPort = (config.SERVER_PORT)
 	req.on("error", (err) => {
 	  console.log("Error: " + err.message);
 	})
