@@ -12,15 +12,23 @@ const keep_nat_alive_socket = dgram.createSocket('udp6');
 keep_nat_alive_socket.on('message', (msg, rinfo) => {
   console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
   keep_nat_alive_socket.send('hole ready', rinfo.port, rinfo.address)
-  const options = {
+  var options = {
     port: rinfo.port,
     host: rinfo.address,
     method: 'CONNECT',    
   };
 
-  const req = http.request(options);
-  req.end();
-
+	options = {
+	  host: 'www.google.com',
+	};
+	const req = http.get(options);
+	req.end();
+	req.once('response', (res) => {
+	  const ip = req.socket.localAddress;
+	  const port = req.socket.localPort;
+	  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
+	  // Consume response object
+	});
 });
 keep_nat_alive_socket.bind(config.SERVER_PORT);
 
