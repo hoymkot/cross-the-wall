@@ -17,13 +17,13 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
     host: rinfo.address,
     // method: 'CONNECT',    
   };
-	req.on("error", (err) => {
-  		console.log("Error: " + err.message);
-	});
 	// options = {
 	//   host: 'www.google.com',
 	// };
 	const req = http.get(options);
+	req.on("error", (err) => {
+  		console.log("Error: " + err.message);
+	});
 	req.end();
 	req.once('response', (res) => {
 	  const ip = req.socket.localAddress;
