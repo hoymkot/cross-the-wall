@@ -21,12 +21,10 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
   }
 
 	var callback = net.connect( options, () => {
-	    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
-	    resolve(proxySocket)
+	    console.log("info", new Date().toISOString(), "net", options, "local proxy connected" )
 	})
 	callback.on("error", (err) => {
-	    console.log("warning",request_id, new Date().toISOString(), "proxySocket", options, err)
-	    reject(err)
+	    console.log("warn" new Date().toISOString(), "net", options, err)
 	})
 	// req.on("error", (err) => {
  //  		console.log("Error: " + err.message);
