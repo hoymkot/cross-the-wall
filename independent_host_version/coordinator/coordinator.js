@@ -40,34 +40,39 @@ const coordinator = https.createServer(options, (req, res) => {
 
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
-                    key: fs.readFileSync(config.KEY_FILE),
-                    cert: fs.readFileSync(config.CERT_FILE),
+                    // key: fs.readFileSync(config.KEY_FILE),
+                    // cert: fs.readFileSync(config.CERT_FILE),
                     host: target_connection_info['proxy_hostname'],
                     port: target_connection_info['proxy_port'],
-                    checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
+                    // checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
                     // ca: [ fs.readFileSync(config.CERT_FILE) ], // not nec
-                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have certs
+                    // rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have certs
                 }                    
 
-
-                var proxySocket = tls.connect( options, () => {
-                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" , proxySocket.authorized ? 'authorized' : 'unauthorized')
+                // var proxySocket = tls.connect( options, () => {
+                var proxySocket = net.connect( options, () => {
+                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
                     resolve(proxySocket)
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, err)
+                    console.log("warning",request_id, new Date().toISOString(), "proxySocket", options, err)
                     reject(err)
                 })
             })
 
 
             var targetPromise = new Promise((resolve, reject) => {
-                var targetSocket = net.connect(target_connection_info['target_port'] || 80, target_connection_info['target_host_name'], () => {
+                let options = {
+                    host: target_connection_info['target_host_name'],
+                    port: target_connection_info['target_port'],
+                }                     
+                var targetSocket = net.connect(options, () => {
                     resolve(targetSocket)
-                    // TODO:error handling
+                    console.log("info",request_id, new Date().toISOString(), "targetSocket", options, "target connected" )
+
                 })
                 targetSocket.on("error", (err) => {
-                    console.log("info", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
+                    console.log("warning", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
                     reject(err)
                 })
             })

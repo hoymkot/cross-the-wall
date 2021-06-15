@@ -39,6 +39,10 @@ module.exports = {
         })
       }, config.NAT_KEEP_ALIVE_INTERVAL)
 
+      keep_nat_alive_socket.on('error', (err) => {
+        console.log("warn", new Date().toISOString, "keep_nat_alive_socket", err.lineNumber, err)
+      });
+
 
       let options = {
         key: fs.readFileSync(config.KEY_FILE),
@@ -47,7 +51,8 @@ module.exports = {
         // rejectUnauthorized : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify remote coordinator if vailid ca is available
       }
 
-      let server = tls.createServer(options, (remote_coordinator_socket) => {
+      // let server = tls.createServer(options, (remote_coordinator_socket) => {
+      let server = net.createServer(options, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
         const req_uuid_bytes_length = Buffer.from(uuid.v4()).length
