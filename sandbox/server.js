@@ -21,24 +21,28 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
 	//   host: 'www.google.com',
 	// };
 
-
-	const req = http.get(options,  (resp) => {
-  		let data = '';
-
-		  // A chunk of data has been received.
-		  resp.on('data', (chunk) => {
-		  	console.log("hello")
-		    data += chunk;
-		  });
-
-		  // The whole response has been received. Print out the result.
-		  resp.on('end', () => {
-		  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
-		  });
-
-	}).on("error", (err) => {
+ 	const req = http.request(options);
+	req.socket.bind(config.SERVER_PORT)
+	req.on("error", (err) => {
 	  console.log("Error: " + err.message);
-	});
+	})
+	req.end();
+
+	  req.on('connect', (res, socket, head) => {
+	    console.log('got connected!');
+
+	    // Make a request over an HTTP tunnel
+	    socket.write('GET / HTTP/1.1\r\n' +
+	                 'Host: www.google.com:80\r\n' +
+	                 'Connection: close\r\n' +
+	                 '\r\n');
+	    socket.on('data', (chunk) => {
+	      console.log(chunk.toString());
+	    });
+	    socket.on('end', () => {
+	      proxy.close();
+	    });
+	  });
 	// req.on("error", (err) => {
  //  		console.log("Error: " + err.message);
 	// });
