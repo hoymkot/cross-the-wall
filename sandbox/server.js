@@ -17,7 +17,9 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
     host: rinfo.address,
     // method: 'CONNECT',    
   };
-
+	req.on("error", (err) => {
+  		console.log("Error: " + err.message);
+	});
 	// options = {
 	//   host: 'www.google.com',
 	// };
@@ -29,6 +31,7 @@ keep_nat_alive_socket.on('message', (msg, rinfo) => {
 	  console.log(`Your IP address is ${ip} and your source port is ${port}.`);
 	  // Consume response object
 	});
+
 });
 keep_nat_alive_socket.bind(config.SERVER_PORT);
 
