@@ -4,8 +4,7 @@ module.exports = {
  	PROXY_HOSTNAME : "localhost", // hostname for local browser to point to
  	PROXY_LOCAL_PORT : 8337, // port for local browser to point to
 
-	KEY_FILE : 'key.pem',
-	CERT_FILE : 'cert.pem', 
+ 	SERVER_PORT : 8338, // port for local browser to point to
 
 	COORDINATOR_HOSTNAME : "[2600:1f14:ca1:de00:639d:c0ab:7bad:d37b]",
 	// COORDINATOR_HOSTNAME : "localhost",

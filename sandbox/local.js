@@ -7,9 +7,9 @@ const config = require('./config');
 
 const keep_nat_alive_socket = dgram.createSocket('udp6');
 
-keep_nat_alive_socket.bind(config.port);
+keep_nat_alive_socket.bind(config.SERVER_PORT);
 
-keep_nat_alive_socket.send('hole punching', config.RETURN_IP_PORT_SERVICE.port, config.RETURN_IP_PORT_SERVICE.ip)
+keep_nat_alive_socket.send('hole punching', config.RETURN_IP_PORT_SERVICE.port, config.port.ip)
 
 
 keep_nat_alive_socket.on('message', (msg, rinfo) => {
