@@ -35,7 +35,7 @@ const coordinator = https.createServer(options, (req, res) => {
             // TODO: decrypt target_connection_info 
             var target_connection_info = JSON.parse(body.toString())
             console.log("info", request_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
-
+            console.log("info", request_id, new Date().toISOString(), target_connection_info.uuid)
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
                     host: target_connection_info['proxy_hostname'],
