@@ -5,7 +5,6 @@ const http = require('http');
 const net = require('net');
 const uuid = require('uuid')
 const fs = require('fs');
-const tls = require('tls');
 
 const config = require('./config')
 
@@ -40,15 +39,12 @@ const coordinator = https.createServer(options, (req, res) => {
 
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
-                    key: fs.readFileSync(config.KEY_FILE),
-                    cert: fs.readFileSync(config.CERT_FILE),
                     host: target_connection_info['proxy_hostname'],
                     port: target_connection_info['proxy_port'],
-                    rejectUnauthorized: false, // always false, because we don't do client side authentication 
                 }                    
                   // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
                   // TODO: bind port to request from the Remote Coordinator. 
-                var proxySocket = tls.connect( options, () => {
+                var proxySocket = net.connect( options, () => {
                 // var proxySocket = net.connect( options, () => {
                     console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
                     resolve(proxySocket)

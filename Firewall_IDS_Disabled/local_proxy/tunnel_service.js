@@ -4,7 +4,6 @@ const uuid = require('uuid')
 const net = require('net')
 const dgram = require('dgram')
 const fs = require('fs')
-const tls = require('tls')
 
 const config = require('./config')
 const client_socket_table = require('./client_socket_table')
@@ -49,11 +48,8 @@ module.exports = {
       let options = {
         key: fs.readFileSync(config.KEY_FILE),
         cert: fs.readFileSync(config.CERT_FILE),
-        // requestCert : config.ACCEPT_SELF_SIGNED_CERT == false, // TODO: proxy might want to identify client certificate
-        rejectUnauthorized : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify remote coordinator if vailid ca is available
-      }
 
-      let server = tls.createServer(options, (remote_coordinator_socket) => {
+      let server = net.createServer(options, (remote_coordinator_socket) => {
       // let server = net.createServer(options, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
