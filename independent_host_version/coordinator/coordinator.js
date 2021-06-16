@@ -40,17 +40,18 @@ const coordinator = https.createServer(options, (req, res) => {
 
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
-                    // key: fs.readFileSync(config.KEY_FILE),
-                    // cert: fs.readFileSync(config.CERT_FILE),
+                    key: fs.readFileSync(config.KEY_FILE),
+                    cert: fs.readFileSync(config.CERT_FILE),
                     host: target_connection_info['proxy_hostname'],
                     port: target_connection_info['proxy_port'],
                     // checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
                     // ca: [ fs.readFileSync(config.CERT_FILE) ], // not nec
-                    // rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have certs
+                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have legitimate certs
                 }                    
-
-                // var proxySocket = tls.connect( options, () => {
-                var proxySocket = net.connect( options, () => {
+                  // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
+                  // TODO: bind port to request from the Remote Coordinator. 
+                var proxySocket = tls.connect( options, () => {
+                // var proxySocket = net.connect( options, () => {
                     console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
                     resolve(proxySocket)
                 })
