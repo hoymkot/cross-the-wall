@@ -14,7 +14,7 @@ module.exports = {
       const proxy_server = http.createServer((req, res) => {});
 
       // Now that proxy is running
-      proxy_server.listen(config.PROXY_LOCAL_PORT, config.PROXY_HOSTNAME, () => {
+      proxy_server.listen(config.PROXY_LOCAL_PORT, () => {
           console.log("info", new Date().toISOString(), "localhost poxy started")
       });
 

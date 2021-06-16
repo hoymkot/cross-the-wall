@@ -1,16 +1,13 @@
  'use strict'
 
 const https = require('https');
+const http = require('http');
 const net = require('net');
 const uuid = require('uuid')
 const fs = require('fs');
 const tls = require('tls');
 
 const config = require('./config')
-
-
-const COORDINATOR_HOSTNAME = config.COORDINATOR_HOSTNAME
-const COORDINATOR_PORT = config.COORDINATOR_PORT
 
 
 const options = {
@@ -47,30 +44,36 @@ const coordinator = https.createServer(options, (req, res) => {
                     cert: fs.readFileSync(config.CERT_FILE),
                     host: target_connection_info['proxy_hostname'],
                     port: target_connection_info['proxy_port'],
-                    checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
+                    // checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
                     // ca: [ fs.readFileSync(config.CERT_FILE) ], // not nec
-                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have certs
+                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have legitimate certs
                 }                    
-
-
+                  // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
+                  // TODO: bind port to request from the Remote Coordinator. 
                 var proxySocket = tls.connect( options, () => {
-                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" , proxySocket.authorized ? 'authorized' : 'unauthorized')
+                // var proxySocket = net.connect( options, () => {
+                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
                     resolve(proxySocket)
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("info",request_id, new Date().toISOString(), "proxySocket", options, err)
+                    console.log("warning",request_id, new Date().toISOString(), "proxySocket", options, err)
                     reject(err)
                 })
             })
 
 
             var targetPromise = new Promise((resolve, reject) => {
-                var targetSocket = net.connect(target_connection_info['target_port'] || 80, target_connection_info['target_host_name'], () => {
+                let options = {
+                    host: target_connection_info['target_host_name'],
+                    port: target_connection_info['target_port'],
+                }                     
+                var targetSocket = net.connect(options, () => {
                     resolve(targetSocket)
-                    // TODO:error handling
+                    console.log("info",request_id, new Date().toISOString(), "targetSocket", options, "target connected" )
+
                 })
                 targetSocket.on("error", (err) => {
-                    console.log("info", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
+                    console.log("warning", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
                     reject(err)
                 })
             })
@@ -94,7 +97,23 @@ coordinator.on("error", (err)=>{
 
 
 // Now that proxy is running
-coordinator.listen(COORDINATOR_PORT, COORDINATOR_HOSTNAME, () => {
+coordinator.listen(config.COORDINATOR_PORT, () => {
     console.log("info", new Date().toISOString(), "coordinator started ")
 });
 
+
+
+let ip_port = http.createServer(function (req, res) {
+  var o = {
+    'ip': (res.socket.remoteAddress),
+    'port' : (res.socket.remotePort),
+  }
+  console.log("info", new Date().toISOString(), 'ip.port',o)
+
+  res.write(JSON.stringify(o)); //write a response to the client
+  res.end(); 
+}).listen(config.RETURN_IP_PORT_PORT); 
+
+ip_port.on('error', (err) => {
+        console.log("error", new Date().toISOString, __filename, err)
+});

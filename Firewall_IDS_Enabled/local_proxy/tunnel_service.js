@@ -27,6 +27,8 @@ module.exports = {
 
     start(local_interface) {
 
+      // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
+      // TODO: bind port to request from the Remote Coordinator. 
       const keep_nat_alive_socket = dgram.createSocket('udp6');
       keep_nat_alive_socket.bind(local_interface.localPort, local_interface.localAddress)
       setInterval(()=>{
@@ -39,15 +41,20 @@ module.exports = {
         })
       }, config.NAT_KEEP_ALIVE_INTERVAL)
 
+      keep_nat_alive_socket.on('error', (err) => {
+        console.log("warn", new Date().toISOString, "keep_nat_alive_socket", err.lineNumber, err)
+      });
+
 
       let options = {
         key: fs.readFileSync(config.KEY_FILE),
         cert: fs.readFileSync(config.CERT_FILE),
-        // requestCert : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify client certificate
-        // rejectUnauthorized : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify remote coordinator if vailid ca is available
+        // requestCert : config.ACCEPT_SELF_SIGNED_CERT == false, // TODO: proxy might want to identify client certificate
+        rejectUnauthorized : config.ACCEPT_SELF_SIGNED_CERT == false, // proxy might want to identify remote coordinator if vailid ca is available
       }
 
       let server = tls.createServer(options, (remote_coordinator_socket) => {
+      // let server = net.createServer(options, (remote_coordinator_socket) => {
 
         var req_uuid = Buffer.from('')
         const req_uuid_bytes_length = Buffer.from(uuid.v4()).length
