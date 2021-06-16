@@ -44,9 +44,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     cert: fs.readFileSync(config.CERT_FILE),
                     host: target_connection_info['proxy_hostname'],
                     port: target_connection_info['proxy_port'],
-                    // checkServerIdentity: () => { return null; }, // the local proxy is most likely to use self-sign certs 
-                    // ca: [ fs.readFileSync(config.CERT_FILE) ], // not nec
-                    rejectUnauthorized: false, // always false, because we don't expect clients (local proxy) to have legitimate certs
+                    rejectUnauthorized: false, // always false, because we don't do client side authentication 
                 }                    
                   // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
                   // TODO: bind port to request from the Remote Coordinator. 
@@ -56,7 +54,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     resolve(proxySocket)
                 })
                 proxySocket.on("error", (err) => {
-                    console.log("warning",request_id, new Date().toISOString(), "proxySocket", options, err)
+                    console.log("warn",request_id, new Date().toISOString(), "proxySocket", options, err)
                     reject(err)
                 })
             })
@@ -84,7 +82,7 @@ const coordinator = https.createServer(options, (req, res) => {
                     sockets[0].pipe(sockets[1])
                     sockets[1].pipe(sockets[0])
                 }).catch((err) => {
-                    console.log("warning", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
+                    console.log("warn", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
                 })
 
         });
