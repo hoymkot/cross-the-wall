@@ -11,7 +11,6 @@ const config = require('./config')
 
 var instance = (function() {
  	let table = {};
-  let keyTable = {} 
 
   // periodically remove destroyed client socket from the table
 	setTimeout(()=>{
@@ -33,7 +32,11 @@ var instance = (function() {
 
     	getSocket(session_id) {
         	return table[session_id]  || false
-    	}
+    	},
+
+      dump() {
+        console.log(table)
+      }
   	};
 })();
 

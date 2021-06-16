@@ -70,6 +70,7 @@ const coordinator = https.createServer(options, (req, res) => {
                 })
             })
 
+            console.log(target_connection_info.uuid)
             Promise.all([targetPromise, proxyPromise])
                 .then((sockets) => {
                     sockets[1].write(target_connection_info.uuid)
