@@ -36,7 +36,6 @@ const coordinator = https.createServer(options, (req, res) => {
             var target_connection_info = JSON.parse(body.toString())
             console.log("info", request_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
 
-
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
                     host: target_connection_info['proxy_hostname'],
@@ -45,7 +44,6 @@ const coordinator = https.createServer(options, (req, res) => {
                   // NOTE: here I didn't bind request port because it is working like this in my NAT. but different NAT have different implementation 
                   // TODO: bind port to request from the Remote Coordinator. 
                 var proxySocket = net.connect( options, () => {
-                // var proxySocket = net.connect( options, () => {
                     console.log("info",request_id, new Date().toISOString(), "proxySocket", options, "local proxy connected" )
                     resolve(proxySocket)
                 })
@@ -67,7 +65,7 @@ const coordinator = https.createServer(options, (req, res) => {
 
                 })
                 targetSocket.on("error", (err) => {
-                    console.log("warning", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
+                    console.log("warn", request_id, new Date().toISOString(), "targetSocket", target_connection_info.target_host_name, err)
                     reject(err)
                 })
             })
