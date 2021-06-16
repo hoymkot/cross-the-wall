@@ -70,8 +70,6 @@ module.exports = {
               // once we get the uuid, we find the corresponding browser socket from the lookup table
               let socket_package = client_socket_table.getSocket(true_req_uuid)
 
-              console.log(true_req_uuid)
-              client_socket_table.dump()
               clientSocket = socket_package.clientSocket
 
               // write data from target to client brower
