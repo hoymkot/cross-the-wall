@@ -64,9 +64,9 @@
 * heartbeats for systems
 * incorporate express to major http ends point for common error handling and logging
 * combine Return IP:Port and Remote Coordinator
-* Remote Coordinator and Local Proxy reuse TLS session, Perfect Future Secrecy, better performance
+* Remote Coordinator and Local Proxy reuse TLS session, Perfect Future Secrecy, Ticket  better performance
 * proxy server remote ip:port return error keep retrying for a pre-set number of times.
+* Auto generate key pair for the Local Proxy on installation and renew every day/week/month, or switch to stream sysmetric key encryption
+* aws lambda version , with user defined NAT 
 * move it to SCF to have a test run 
-* two version 
-*** aws lambda version , with user defined NAT 
-*** independent hosting, can optimize this project 
+* crypto.secureHeapUsed()
