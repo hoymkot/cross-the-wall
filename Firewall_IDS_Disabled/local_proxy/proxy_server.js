@@ -1,10 +1,31 @@
+'use strict'
 const { URL } = require('url')
 const https = require('https')
 const http = require('http')
 
+
+var crypto 
+(async function () {
+  crypto = await import('crypto')
+})()
+
+const webcrypto = require('crypto').webcrypto;
 const config = require('./config')
 const client_socket_table = require('./client_socket_table')
 
+
+function generateEncryptionKeys() {
+
+  var password =  webcrypto.getRandomValues(new Uint8Array(config.PASSWORD_SIZE));
+  var salt = webcrypto.getRandomValues(new Uint8Array(config.PASSWORD_SIZE));
+  var key = crypto.scryptSync(password, salt, 24)
+  var iv = crypto.randomFillSync(Buffer.alloc(16))
+  
+  return {
+    key: key.toString('hex'),
+    iv : iv.toString('hex')
+  }
+}
 
 module.exports = {
 
@@ -27,9 +48,12 @@ module.exports = {
       // Create an HTTP tunneling proxy
       proxy_server.on('connect', (req, clientSocket, head) => {
 
+        let socket_package = generateEncryptionKeys()
+        socket_package.clientSocket = clientSocket
+        
         // Connect to an origin server, http or https really doesn't matter in this design
         const { port, hostname } = new URL(`http://${req.url}`);
-        let session_id = client_socket_table.addSocket(clientSocket)
+        let session_id = client_socket_table.addSocket(socket_package)
 
         clientSocket.on('error', (err) => {
             console.log("error", new Date().toISOString, "clientSocket", err.lineNumber, session_id, err)
@@ -43,13 +67,14 @@ module.exports = {
         console.log("info", new Date().toISOString(), 'req.url',session_id, req.url)
 
 
-
         var connection_info = {
           proxy_hostname: network_interface_info.ip, // let Remote coordinator to callback to build tunnels 
           proxy_port: network_interface_info.port, 
           target_host_name: hostname,
           target_port: port,
-          uuid: session_id
+          uuid: session_id,
+          key :socket_package.key.toString('hex'),
+          iv :socket_package.iv.toString('hex'),
         }
         // make this socket available for latter reference 
 

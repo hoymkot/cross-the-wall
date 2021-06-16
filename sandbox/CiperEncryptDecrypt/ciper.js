@@ -92,7 +92,7 @@
 
 	const { getRandomValues } = require('crypto').webcrypto;
 
-	var password = "password"
+	var password = getRandomValues(new Uint8Array(16));
 	var salt = getRandomValues(new Uint8Array(16));
 
 	const algorithm = 'aes-192-cbc';
@@ -100,7 +100,7 @@
 
 	var init_vector ; 
 	var secret_key ; 
-	var key = scryptSync(password, salt, 24)
+	var key = scryptSync(salt, salt, 24)
 
 	var iv = randomFillSync(Buffer.alloc(16))
 	const cipher = createCipheriv(algorithm, key, iv);

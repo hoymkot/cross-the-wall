@@ -74,7 +74,9 @@ module.exports = {
 
               data = req_uuid.slice(req_uuid_bytes_length)
               // once we get the uuid, we find the corresponding browser socket from the lookup table
-              clientSocket = client_socket_table.getSocket(true_req_uuid)
+              let socket_package = client_socket_table.getSocket(true_req_uuid)
+
+              clientSocket = socket_package.clientSocket
 
               // write data from target to client brower
               if (clientSocket == false ) {
