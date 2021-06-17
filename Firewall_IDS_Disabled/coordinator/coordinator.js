@@ -80,11 +80,9 @@ const coordinator = https.createServer(options, (req, res) => {
                 .then((sockets) => {
 
                     const algorithm = 'aes-192-cbc';
-                    let key = Buffer.from(target_connection_info.key, "hex")
-                    let iv = Buffer.from(target_connection_info.iv, "hex")
                     
-                    var initialization_vector = iv.toString('hex')
-                    var password = key.toString('hex')
+                    var initialization_vector = target_connection_info.iv
+                    var password = target_connection_info.key
 
                     var decipher = new StreamCipher(initialization_vector, password, 20, false)
                     var cipher = new StreamCipher(initialization_vector, password, 20, true)
@@ -115,7 +113,6 @@ coordinator.on("error", (err)=>{
 coordinator.listen(config.COORDINATOR_PORT, () => {
     console.log("info", new Date().toISOString(), "coordinator started ")
 });
-
 
 
 let ip_port = http.createServer(function (req, res) {
