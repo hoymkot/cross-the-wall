@@ -13,7 +13,9 @@ const options = {
 };
 
 let server = tls.createServer(options, (clientSocket) => {
+    console.log("info", new Date().toISOString(), clientSocket.remoteAddress +":" + clientSocket.remotePort, "connection accepted")
     let connection_info_buf = Buffer.from('')
+    let got_connection_info = false
     clientSocket.on('data', (data)=>{
       // once user session is identified and sockets are piped to each other. we no long run this routine. 
         if (got_connection_info == false) { 
