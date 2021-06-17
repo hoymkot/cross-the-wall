@@ -10,6 +10,7 @@ var crypto
 (async function () {
   crypto = await import('crypto')
 })()
+var StreamCipher = require('stream-cipher')
 
 const config = require('./config')
 
@@ -82,15 +83,31 @@ const coordinator = https.createServer(options, (req, res) => {
                     let key = Buffer.from(target_connection_info.key, "hex")
                     let iv = Buffer.from(target_connection_info.iv, "hex")
 
-                    const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+                    var decipher = new StreamCipher(initialization_vector, password, 20, false)
+                    var cipher = new StreamCipher(initialization_vector, password, 20, true)
+
 
                     sockets[1].write(target_connection_info.uuid)
-                    sockets[0].pipe(cipher)
-                    cipher.pipe(sockets[1])
+                    sockets[0].pipe(cipher.digest)
+                    cipher.digest.pipe(sockets[1])
 
-                    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-                    sockets[1].pipe(decipher)
-                    decipher.pipe(sockets[0])
+                    sockets[1].pipe(decipher.digest)
+                    decipher.digest.pipe(sockets[0])
+
+
+
+
+
+                    // const cipher = crypto.createCipheriv(algorithm, key, iv);
+
+                    // sockets[1].write(target_connection_info.uuid)
+                    // sockets[0].pipe(cipher)
+                    // cipher.pipe(sockets[1])
+
+                    // const decipher = crypto.createDecipheriv(algorithm, key, iv);
+                    // sockets[1].pipe(decipher)
+                    // decipher.pipe(sockets[0])
 
                 }).catch((err) => {
                     console.log("warn", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
