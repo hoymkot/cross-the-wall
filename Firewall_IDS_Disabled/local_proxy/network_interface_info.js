@@ -39,7 +39,7 @@ module.exports = {
                               });
       return info
     } catch (error) {
-        console.log("error", new Date().toISOString(), __filename, config.EXTERNAL_IP_PORT_SERVICE, error)
+        console.log("error", new Date().toISOString(), __filename, config.RETURN_IP_PORT_SERVICE, error.toString())
         return false
     }
   }

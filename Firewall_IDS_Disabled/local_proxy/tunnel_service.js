@@ -5,6 +5,13 @@ const net = require('net')
 const dgram = require('dgram')
 const fs = require('fs')
 const tls = require('tls')
+var StreamCipher = require('stream-cipher')
+
+var crypto 
+(async function () {
+  crypto = await import('crypto')
+})()
+
 
 const config = require('./config')
 const client_socket_table = require('./client_socket_table')
@@ -76,16 +83,21 @@ module.exports = {
               if (socket_package == false ) {
                 console.log("error", new Date().toISOString(), "clientSocket", "no client socket found for uuid " + true_req_uuid)
               } else {
-                clientSocket.write(data) // write residual data
-                // connect client socket and Remote Coordinator socket
 
-                // activities with clientSocket may also be considered as using the port 
-                clientSocket.on('data', (data)=>{
-                  // currently no-op
-                })
+                const algorithm = 'aes-192-cbc';
+                var initialization_vector = socket_package.iv.toString('hex')
+                var password = socket_package.key.toString('hex')
+                var decipher = new StreamCipher(initialization_vector, password, 20, false)
+                var cipher = new StreamCipher(initialization_vector, password, 20, true)
 
-                clientSocket.pipe(remote_coordinator_socket) 
-                remote_coordinator_socket.pipe(clientSocket) 
+                decipher.digest.write(data)
+                remote_coordinator_socket.pipe(decipher.digest)
+                decipher.digest.pipe(clientSocket)
+
+                clientSocket.pipe(cipher.digest)
+                cipher.digest.pipe(remote_coordinator_socket) 
+
+
                 // everything should be done by this point
               }
 

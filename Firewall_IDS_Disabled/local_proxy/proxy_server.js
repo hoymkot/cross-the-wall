@@ -18,12 +18,10 @@ function generateEncryptionKeys() {
 
   var password =  webcrypto.getRandomValues(new Uint8Array(config.PASSWORD_SIZE));
   var salt = webcrypto.getRandomValues(new Uint8Array(config.PASSWORD_SIZE));
-  var key = crypto.scryptSync(password, salt, 24)
-  var iv = crypto.randomFillSync(Buffer.alloc(16))
   
   return {
-    key: key.toString('hex'),
-    iv : iv.toString('hex')
+    key: crypto.scryptSync(password, salt, 24),
+    iv : crypto.randomFillSync(Buffer.alloc(16))
   }
 }
 
