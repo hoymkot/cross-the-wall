@@ -109,7 +109,7 @@ coordinator.on("error", (err)=>{
 })
 
 
-// Now that proxy is running
+// Now that the Remote Coordinator is running
 coordinator.listen(config.COORDINATOR_PORT, () => {
     console.log("info", new Date().toISOString(), "coordinator started ")
 });

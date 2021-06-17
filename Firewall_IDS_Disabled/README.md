@@ -65,3 +65,4 @@
 * incorporate express to major http ends point for common error handling and logging
 * aws lambda version , with user defined NAT 
 * move it to SCF to have a test run 
+* smart switch between callback and relay. remember configuration so we only do it one time. 
