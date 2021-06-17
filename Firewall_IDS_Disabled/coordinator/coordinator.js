@@ -85,8 +85,8 @@ const coordinator = https.createServer(options, (req, res) => {
                     const cipher = crypto.createCipheriv(algorithm, key, iv);
 
                     sockets[1].write(target_connection_info.uuid)
-                    sockets[0].pipe(ciper)
-                    ciper.pipe(sockets[1])
+                    sockets[0].pipe(cipher)
+                    cipher.pipe(sockets[1])
 
                     const decipher = crypto.createDecipheriv(algorithm, key, iv);
                     sockets[1].pipe(decipher)
