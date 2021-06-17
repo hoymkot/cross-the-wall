@@ -4,6 +4,7 @@
 * log request 
 * each service component can run independently (loose coupling).
 * able to work behind a NAT infrastructure
+* PKI for Local Proxy => the Remote Coordinator , Symmetrice key encryption for the Remote Coordinator => Local Proxy Callback
 
 ## Environment Issues
 * need to enable IPv6 on your operating systems (on all hosts running this software) because it is getting more and more prevalent now (google is a good help). Note that some os requires you to manually enable 
@@ -16,6 +17,7 @@
 * node.js v16.0.0
 * npm install uuid@8.3.2
 * npm install axios@0.21.1
+* npm install stream-cipher@0.0.3
 
 ## Technial Specification 
 **Client Web Browser** <=> **Local Proxy** <=> **Firewall** <=> **Remote Coordinator** <=> **Target Web Server**
@@ -58,15 +60,8 @@
 ## Todo
 * package.json - auto install  - global install - npm 
 * live test behind firewall
-* performance testing
 * fix TODO 
-* proxy server timeout
 * heartbeats for systems
 * incorporate express to major http ends point for common error handling and logging
-* combine Return IP:Port and Remote Coordinator
-* Remote Coordinator and Local Proxy reuse TLS session, Perfect Future Secrecy, Ticket  better performance
-* proxy server remote ip:port return error keep retrying for a pre-set number of times.
-* Auto generate key pair for the Local Proxy on installation and renew every day/week/month, or switch to stream sysmetric key encryption
 * aws lambda version , with user defined NAT 
 * move it to SCF to have a test run 
-* crypto.secureHeapUsed()
