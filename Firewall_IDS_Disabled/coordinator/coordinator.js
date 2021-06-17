@@ -90,7 +90,7 @@ const coordinator = https.createServer(options, (req, res) => {
 
                     const decipher = crypto.createDecipheriv(algorithm, key, iv);
                     sockets[1].pipe(decipher)
-                    decipher.pipe(socket[0])
+                    decipher.pipe(sockets[0])
 
                 }).catch((err) => {
                     console.log("warn", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
