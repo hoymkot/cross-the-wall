@@ -82,7 +82,9 @@ const coordinator = https.createServer(options, (req, res) => {
                     const algorithm = 'aes-192-cbc';
                     let key = Buffer.from(target_connection_info.key, "hex")
                     let iv = Buffer.from(target_connection_info.iv, "hex")
-
+                    
+                    var initialization_vector = "private_init_vector_string"
+                    var password = "123dontusethispassword"
 
                     var decipher = new StreamCipher(initialization_vector, password, 20, false)
                     var cipher = new StreamCipher(initialization_vector, password, 20, true)
