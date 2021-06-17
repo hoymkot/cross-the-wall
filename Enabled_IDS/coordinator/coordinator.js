@@ -19,7 +19,7 @@ let server = tls.createServer(options, (clientSocket) => {
     clientSocket.on('data', (data)=>{
       // once user session is identified and sockets are piped to each other. we no long run this routine. 
         if (got_connection_info == false) { 
-            idx = data.indexOf(Buffer.from('}'), 0)
+            let idx = data.indexOf(Buffer.from('}'), 0)
             if ( idx == -1 ) {
                 connection_info_buf = Buffer.concat([connection_info_buf, data])
             } else {
