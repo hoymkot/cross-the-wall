@@ -27,13 +27,13 @@ let server = tls.createServer(options, (clientSocket) => {
                 data = data.slice(idx+1)
 
                     got_connection_info = true
-                    connection_info =  JSON.parse(connection_info_buf.toString());
+                    let connection_info =  JSON.parse(connection_info_buf.toString());
                     
                     let options = {
                         host: connection_info['target_host_name'],
                         port: connection_info['target_port'],
                     }       
-                    targetSocket = net.connect(options, () => {
+                    let targetSocket = net.connect(options, () => {
                         console.log("info", new Date().toISOString(), "targetSocket", options, "target connected" )
                         clientSocket.pipe(targetSocket)  
                         targetSocket.pipe(clientSocket)                      
