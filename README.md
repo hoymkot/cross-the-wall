@@ -5,6 +5,7 @@
 * each service component can run independently (loose coupling).
 * able to work behind a NAT infrastructure
 * PKI for Local Proxy => the Remote Coordinator , Symmetrice key encryption for the Remote Coordinator => Local Proxy Callback
+* Relay version done, but it is apparently slower. We are double encrypting because we need to encrypt the tls and shake. may be we try with symmetric encryption to see if it would be faster 
 
 ## Environment Issues
 * need to enable IPv6 on your operating systems (on all hosts running this software) because it is getting more and more prevalent now (google is a good help). Note that some os requires you to manually enable 
@@ -63,6 +64,8 @@
 * fix TODO 
 * heartbeats for systems
 * incorporate express to major http ends point for common error handling and logging
-* aws lambda version , with user defined NAT 
-* move it to SCF to have a test run 
+* aws lambda version , with user defined NAT, the problem is that ids doesn't allow callback from out side
 * smart switch between callback and relay. remember configuration so we only do it one time. 
+* [Relay version ] test if sysmetric encryption would make the whole thing faster 
+*** 1, send request to get symm key, valid for hour/day/week? 
+*** 2, use the sym key for encryption afterword.  

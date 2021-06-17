@@ -1,13 +1,13 @@
 'use strict'
 const { URL } = require('url')
-const https = require('https')
 const http = require('http')
+const tls = require('tls')
 
 
 const config = require('./config')
 
 
-module.exports = {
+ module.exports = {
 
   start(){
 
@@ -41,8 +41,6 @@ module.exports = {
 
         console.log("info", new Date().toISOString(), 'req.url', req.url)
 
-        secret = generateEncryptionKeys()
-
         var connection_info = {
           target_host_name: hostname,
           target_port: port,
@@ -50,12 +48,12 @@ module.exports = {
 
 
         const options = {
-          hostname: config.COORDINATOR_HOSTNAME,
+          host: config.COORDINATOR_HOSTNAME,
           port: config.COORDINATOR_PORT,
           rejectUnauthorized: config.ACCEPT_SELF_SIGNED_CERT == false ,  
         }
 
-        var coordinatorSocket = net.connect(options, () => {
+        var coordinatorSocket = tls.connect(options, () => {
             console.log("info", new Date().toISOString(), "coordinatorSocket", connection_info, "target connected" )
 
             
@@ -65,9 +63,9 @@ module.exports = {
 
         })
         coordinatorSocket.on("error", (err) => {
-            console.log("warn", new Date().toISOString(), "coordinatorSocket", connection_info, err)
+            console.log("warn", new Date().toISOString(), "coordinatorSocket",options, connection_info, err)
         })
-      }
+      })
   }
 
 }
