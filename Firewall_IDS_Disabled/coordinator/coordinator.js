@@ -6,6 +6,11 @@ const net = require('net');
 const uuid = require('uuid')
 const fs = require('fs');
 
+var crypto 
+(async function () {
+  crypto = await import('crypto')
+})()
+
 const config = require('./config')
 
 
@@ -34,6 +39,7 @@ const coordinator = https.createServer(options, (req, res) => {
 
             // TODO: decrypt target_connection_info 
             var target_connection_info = JSON.parse(body.toString())
+            
             console.log("info", request_id, new Date().toISOString(), req.connection.remoteAddress,"target_connection_info", body.toString())
             var proxyPromise = new Promise((resolve, reject) => {
                 let options = {
@@ -71,9 +77,21 @@ const coordinator = https.createServer(options, (req, res) => {
 
             Promise.all([targetPromise, proxyPromise])
                 .then((sockets) => {
+
+                    const algorithm = 'aes-192-cbc';
+                    let key = Buffer.from(target_connection_info.key, "hex")
+                    let iv = Buffer.from(target_connection_info.iv, "hex")
+
+                    const cipher = crypto.createCipheriv(algorithm, key, iv);
+
                     sockets[1].write(target_connection_info.uuid)
-                    sockets[0].pipe(sockets[1])
-                    sockets[1].pipe(sockets[0])
+                    sockets[0].pipe(ciper)
+                    ciper.pipe(sockets[1])
+
+                    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+                    sockets[1].pipe(decipher)
+                    decipher.pipe(socket[0])
+
                 }).catch((err) => {
                     console.log("warn", request_id, new Date().toISOString(), "[targetPromise, proxyPromise]", target_connection_info.target_host_name, target_connection_info.proxy_hostname, "unable to bridge", err)
                 })
